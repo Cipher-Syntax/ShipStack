@@ -2,7 +2,7 @@
 
 <img src="frontend/public/shipstack_logo.jpg" alt="ShipStack Logo" width="250" />
 
-<h1>ShipStack</h1>
+<h1 style="font-size: 64px; letter-spacing: 0.12em; font-weight: 700; margin: 0;">ShipStack</h1>
 
 ### A Modern Marketplace for Production-Ready Software
 
