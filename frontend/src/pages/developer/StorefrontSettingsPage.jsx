@@ -78,6 +78,17 @@ const StorefrontSettingsPage = () => {
         }
     };
 
+    const handleUrlBlur = (e) => {
+        const { name, value } = e.target;
+        if (value && !/^https?:\/\//i.test(value)) {
+            const formatted = `https://${value}`;
+            setFormData(prev => ({ ...prev, [name]: formatted }));
+            if (fieldErrors[name]) {
+                setFieldErrors(prev => ({ ...prev, [name]: null }));
+            }
+        }
+    };
+
     const handleFileChange = (e, type) => {
         const file = e.target.files[0];
         if (file) {
@@ -329,9 +340,10 @@ const StorefrontSettingsPage = () => {
                                 </label>
                                 <Input
                                     name="website_url"
-                                    type="url"
+                                    type="text"
                                     value={formData.website_url}
                                     onChange={handleChange}
+                                    onBlur={handleUrlBlur}
                                     placeholder="https://..."
                                     className="bg-background-primary h-11"
                                 />
@@ -344,9 +356,10 @@ const StorefrontSettingsPage = () => {
                                 </label>
                                 <Input
                                     name="github_url"
-                                    type="url"
+                                    type="text"
                                     value={formData.github_url}
                                     onChange={handleChange}
+                                    onBlur={handleUrlBlur}
                                     placeholder="https://github.com/..."
                                     className="bg-background-primary h-11"
                                 />
@@ -359,9 +372,10 @@ const StorefrontSettingsPage = () => {
                                 </label>
                                 <Input
                                     name="linkedin_url"
-                                    type="url"
+                                    type="text"
                                     value={formData.linkedin_url}
                                     onChange={handleChange}
+                                    onBlur={handleUrlBlur}
                                     placeholder="https://linkedin.com/in/..."
                                     className="bg-background-primary h-11"
                                 />
@@ -374,9 +388,10 @@ const StorefrontSettingsPage = () => {
                                 </label>
                                 <Input
                                     name="twitter_url"
-                                    type="url"
+                                    type="text"
                                     value={formData.twitter_url}
                                     onChange={handleChange}
+                                    onBlur={handleUrlBlur}
                                     placeholder="https://twitter.com/..."
                                     className="bg-background-primary h-11"
                                 />
