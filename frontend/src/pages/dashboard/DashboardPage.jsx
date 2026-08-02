@@ -1,28 +1,50 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { LayoutDashboard, Store, Package, LogOut, Code, User, ChevronRight, ChevronLeft, Sparkles } from 'lucide-react';
+import { LayoutDashboard, Store, Package, LogOut, Code, User, ChevronRight, ChevronLeft, Sparkles, Menu, X } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 
 const DashboardPage = () => {
     const { user, logout } = useAuth();
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     return (
         <div className="min-h-screen bg-background-primary flex font-sans overflow-hidden">
             
+            {/* Mobile Sidebar Overlay */}
+            {isMobileMenuOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                />
+            )}
+
             {/* Sidebar */}
-            <aside className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-background-secondary border-r border-border-primary hidden md:flex flex-col justify-between transition-all duration-300 relative z-20`}>
+            <aside className={`
+                fixed md:static inset-y-0 left-0 z-50 h-full
+                ${isSidebarOpen ? 'w-64' : 'w-20'} 
+                ${isMobileMenuOpen ? 'translate-x-0 flex w-64' : '-translate-x-full md:translate-x-0 flex'}
+                bg-background-secondary border-r border-border-primary flex-col justify-between transition-all duration-300
+            `}>
                 
-                {/* Collapse Toggle Button */}
+                {/* Collapse Toggle Button (Desktop Only) */}
                 <button 
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                    className="absolute -right-3 top-8 bg-background-primary border border-border-primary text-text-secondary rounded-full p-1 shadow-sm hover:text-accent-primary hover:border-accent-primary transition-colors z-30"
+                    className="hidden md:block absolute -right-3 top-8 bg-background-primary border border-border-primary text-text-secondary rounded-full p-1 shadow-sm hover:text-accent-primary hover:border-accent-primary transition-colors z-30"
                 >
                     {isSidebarOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
                 </button>
 
-                <div>
+                {/* Mobile Close Button */}
+                <button 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="md:hidden absolute right-4 top-6 text-text-secondary hover:text-text-primary z-30"
+                >
+                    <X size={24} />
+                </button>
+
+                <div className="flex-1 overflow-y-auto overflow-x-hidden">
                     {/* Sidebar Header */}
                     <div className="p-6 h-20 flex items-center">
                         <Link to="/" className="flex items-center gap-3 text-2xl font-display font-bold text-text-primary overflow-hidden">
@@ -106,11 +128,19 @@ const DashboardPage = () => {
             {/* Main Content */}
             <main className="flex-1 flex flex-col h-screen overflow-y-auto">
                 {/* Mobile Header */}
-                <header className="h-16 border-b border-border-primary bg-background-primary flex items-center justify-between px-6 shrink-0 md:hidden">
-                    <Link to="/" className="flex items-center gap-2 text-xl font-display font-bold text-text-primary">
-                        <img src="/shipstack_logo.jpg" alt="ShipStack" className="w-6 h-6 rounded object-cover shadow-sm" />
-                        ShipStack
-                    </Link>
+                <header className="h-16 border-b border-border-primary bg-background-primary flex items-center justify-between px-4 sm:px-6 shrink-0 md:hidden">
+                    <div className="flex items-center gap-3">
+                        <button 
+                            onClick={() => setIsMobileMenuOpen(true)}
+                            className="p-1.5 -ml-1.5 text-text-secondary hover:text-text-primary rounded-md hover:bg-background-secondary"
+                        >
+                            <Menu size={24} />
+                        </button>
+                        <Link to="/" className="flex items-center gap-2 text-xl font-display font-bold text-text-primary">
+                            <img src="/shipstack_logo.jpg" alt="ShipStack" className="w-6 h-6 rounded object-cover shadow-sm" />
+                            ShipStack
+                        </Link>
+                    </div>
                     <Button variant="ghost" size="sm" onClick={logout}>Sign Out</Button>
                 </header>
 
