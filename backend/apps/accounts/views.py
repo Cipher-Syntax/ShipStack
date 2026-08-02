@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth import get_user_model
-from .serializers import RegisterSerializer, ProfileSerializer
+from .serializers import RegisterSerializer, ProfileSerializer, VerificationApplicationSerializer
 from .services import OTPService, EmailService
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -20,6 +20,25 @@ class RegisterView(APIView):
             EmailService.send_otp(user.email, otp)
             return Response({"message": "Registration successful. Please verify your email."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ResendOTPView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email')
+        if not email:
+            return Response({"error": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user = User.objects.get(email=email)
+            if user.is_active:
+                return Response({"error": "Account is already verified."}, status=status.HTTP_400_BAD_REQUEST)
+            otp = OTPService.generate_otp(email)
+            EmailService.send_otp(email, otp)
+            return Response({"message": "A new OTP has been sent."}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class VerifyEmailView(APIView):
     permission_classes = [AllowAny]
@@ -81,3 +100,26 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+from .models import VerificationApplication
+
+class VerificationApplicationView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            application = VerificationApplication.objects.get(user=request.user)
+            serializer = VerificationApplicationSerializer(application)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except VerificationApplication.DoesNotExist:
+            return Response({"error": "No application found."}, status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request):
+        if VerificationApplication.objects.filter(user=request.user).exists():
+            return Response({"error": "You have already submitted an application."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = VerificationApplicationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

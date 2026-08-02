@@ -33,8 +33,11 @@ export const AuthProvider = ({ children }) => {
         checkAuth();
     }, []);
 
-    const login = async (email, password) => {
-        const res = await api.post("/api/accounts/login/", { email, password });
+    const login = async (username, password) => {
+        const res = await api.post("/api/accounts/login/", {
+            username,
+            password,
+        });
         localStorage.setItem("access_token", res.data.access);
         localStorage.setItem("refresh_token", res.data.refresh);
         await checkAuth();

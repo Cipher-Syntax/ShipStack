@@ -30,5 +30,13 @@ class RegisterSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'date_joined']
-        read_only_fields = ['id', 'email', 'date_joined']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'date_joined', 'is_verified_developer']
+        read_only_fields = ['id', 'email', 'date_joined', 'is_verified_developer']
+
+from .models import VerificationApplication
+
+class VerificationApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VerificationApplication
+        fields = ['id', 'github_url', 'portfolio_url', 'statement', 'status', 'created_at']
+        read_only_fields = ['id', 'status', 'created_at']

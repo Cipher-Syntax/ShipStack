@@ -1,5 +1,7 @@
 import random
 from django.core.cache import cache
+from django.core.mail import send_mail
+from django.conf import settings
 
 class OTPService:
     @staticmethod
@@ -19,9 +21,18 @@ class OTPService:
 class EmailService:
     @staticmethod
     def send_otp(email, otp):
-        # Mocking email sending for development
-        print(f"\n--- EMAIL SENT ---")
-        print(f"To: {email}")
-        print(f"Subject: Your Verification Code")
-        print(f"Code: {otp}")
-        print(f"------------------\n")
+        subject = 'ShipStack Verification Code'
+        message = f'Your verification code is: {otp}\n\nThis code will expire in 5 minutes.'
+        from_email = settings.DEFAULT_FROM_EMAIL
+        
+        try:
+            send_mail(
+                subject,
+                message,
+                from_email,
+                [email],
+                fail_silently=False,
+            )
+            print(f"OTP successfully sent to {email}")
+        except Exception as e:
+            print(f"Failed to send email to {email}: {str(e)}")

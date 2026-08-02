@@ -7,6 +7,7 @@ import RegisterPage from "../pages/auth/RegisterPage";
 import VerifyEmailPage from "../pages/auth/VerifyEmailPage";
 import PasswordResetRequestPage from "../pages/auth/PasswordResetRequestPage";
 import PasswordResetConfirmPage from "../pages/auth/PasswordResetConfirmPage";
+import ApplyPage from "../pages/developer/ApplyPage";
 
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated, isLoading } = useAuth();
@@ -34,6 +35,17 @@ const Dashboard = () => {
             >
                 Logout
             </button>
+
+            {!user?.is_verified_developer && (
+                <div className="mt-4">
+                    <a
+                        href="/developer/apply"
+                        className="text-blue-600 hover:underline"
+                    >
+                        Apply as a Developer
+                    </a>
+                </div>
+            )}
         </div>
     );
 };
@@ -82,6 +94,14 @@ const AppRoutes = () => {
                 }
             />
 
+            <Route
+                path="/developer/apply"
+                element={
+                    <ProtectedRoute>
+                        <ApplyPage />
+                    </ProtectedRoute>
+                }
+            />
             <Route
                 path="/dashboard"
                 element={

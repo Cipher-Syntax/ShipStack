@@ -34,6 +34,14 @@ api.interceptors.response.use(
             return Promise.reject(error);
         }
 
+        // Ignore login endpoint so errors can bubble up to the form
+        if (
+            originalRequest.url.includes("/login/") &&
+            !originalRequest.url.includes("/login/refresh/")
+        ) {
+            return Promise.reject(error);
+        }
+
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             const refreshToken = localStorage.getItem("refresh_token");
