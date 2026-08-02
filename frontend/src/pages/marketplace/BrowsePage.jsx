@@ -1,20 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { getPublicListings, getCategories } from '../../services/listingService';
+import React, { useState, useEffect, useCallback } from 'react';
+import { getPublicListings, getCategories, getTechnologies } from '../../services/listingService';
 import MarketplaceCard from '../../components/marketplace/MarketplaceCard';
 import { Pagination } from '../../components/ui/pagination';
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, SlidersHorizontal } from 'lucide-react';
+import { Drawer } from '../../components/ui/drawer';
 
 const BrowsePage = () => {
     const [listings, setListings] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [technologies, setTechnologies] = useState([]);
+    
+    // UI States
     const [loading, setLoading] = useState(true);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    
+    // Pagination
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     
+    // Filters
+    const [searchInput, setSearchInput] = useState("");
+    const [activeSearch, setActiveSearch] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const [selectedTechs, setSelectedTechs] = useState([]);
+    const [minPrice, setMinPrice] = useState("");
+    const [maxPrice, setMaxPrice] = useState("");
+    const [ordering, setOrdering] = useState("-created_at");
+
+    // Debounce search
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setActiveSearch(searchInput);
+            setCurrentPage(1);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchInput]);
+    
+    // Initial data fetch
     useEffect(() => {
         fetchCategories();
-        fetchListings(currentPage);
-    }, [currentPage]);
+        fetchTechnologies();
+    }, []);
+    
+    // Listings fetch when filters or page changes
+    useEffect(() => {
+        fetchListings();
+    }, [currentPage, activeSearch, selectedCategory, selectedTechs, minPrice, maxPrice, ordering]);
     
     const fetchCategories = async () => {
         try {
@@ -24,14 +55,30 @@ const BrowsePage = () => {
             console.error("Failed to fetch categories", error);
         }
     };
+
+    const fetchTechnologies = async () => {
+        try {
+            const data = await getTechnologies();
+            setTechnologies(data);
+        } catch (error) {
+            console.error("Failed to fetch technologies", error);
+        }
+    };
     
-    const fetchListings = async (page) => {
+    const fetchListings = async () => {
         setLoading(true);
         try {
-            const data = await getPublicListings(page);
+            const filters = {
+                search: activeSearch,
+                category: selectedCategory,
+                technologies: selectedTechs.join(','),
+                min_price: minPrice,
+                max_price: maxPrice,
+                ordering: ordering,
+            };
+            const data = await getPublicListings(currentPage, filters);
             setListings(data.results || data);
             
-            // Assuming DRF paginated response shape
             if (data.count !== undefined) {
                 setTotalPages(Math.ceil(data.count / 12));
             } else {
@@ -49,6 +96,21 @@ const BrowsePage = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    const toggleTech = (slug) => {
+        setSelectedTechs(prev => {
+            if (prev.includes(slug)) return prev.filter(t => t !== slug);
+            return [...prev, slug];
+        });
+        setCurrentPage(1);
+    };
+
+    const handleCategoryClick = (slug) => {
+        setSelectedCategory(slug === selectedCategory ? "" : slug);
+        setCurrentPage(1);
+    };
+
+    const activeFiltersCount = (selectedCategory ? 1 : 0) + selectedTechs.length + (minPrice ? 1 : 0) + (maxPrice ? 1 : 0);
+
     return (
         <div className="min-h-screen bg-background-primary flex flex-col">
             {/* Header / Search Bar area */}
@@ -63,23 +125,53 @@ const BrowsePage = () => {
                             </div>
                             <input
                                 type="text"
-                                className="block w-full pl-10 pr-3 py-3 border border-border-primary rounded-lg leading-5 bg-surface-primary placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-focus-ring sm:text-sm transition-colors"
-                                placeholder="Search by name, category, or technology..."
+                                value={searchInput}
+                                onChange={(e) => setSearchInput(e.target.value)}
+                                className="block w-full pl-10 pr-3 py-3 border border-border-primary rounded-lg leading-5 bg-surface-primary text-text-primary placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-focus-ring sm:text-sm transition-colors"
+                                placeholder="Search by name or description..."
                             />
                         </div>
-                        <button className="inline-flex items-center justify-center px-4 py-2 border border-border-primary rounded-lg shadow-sm text-sm font-medium text-text-primary bg-surface-primary hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-focus-ring transition-colors">
-                            <Filter className="h-4 w-4 mr-2" />
-                            Filters
-                        </button>
+                        
+                        <div className="flex gap-2">
+                            <select 
+                                value={ordering}
+                                onChange={(e) => { setOrdering(e.target.value); setCurrentPage(1); }}
+                                className="block w-40 pl-3 pr-8 py-3 border border-border-primary rounded-lg text-sm bg-surface-primary text-text-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
+                            >
+                                <option value="-created_at">Newest</option>
+                                <option value="price">Price: Low to High</option>
+                                <option value="-price">Price: High to Low</option>
+                            </select>
+
+                            <button 
+                                onClick={() => setIsDrawerOpen(true)}
+                                className="inline-flex items-center justify-center px-4 py-2 border border-border-primary rounded-lg shadow-sm text-sm font-medium text-text-primary bg-surface-primary hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-focus-ring transition-colors relative"
+                            >
+                                <Filter className="h-4 w-4 mr-2" />
+                                Filters
+                                {activeFiltersCount > 0 && (
+                                    <span className="absolute -top-2 -right-2 bg-accent-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                        {activeFiltersCount}
+                                    </span>
+                                )}
+                            </button>
+                        </div>
                     </div>
                     
                     {/* Quick Category Filters */}
                     <div className="mt-6 flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
-                        <button className="whitespace-nowrap px-4 py-1.5 rounded-full bg-accent-primary text-white text-sm font-medium">
+                        <button 
+                            onClick={() => handleCategoryClick("")}
+                            className={`whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${!selectedCategory ? 'bg-accent-primary text-white' : 'bg-surface-primary border border-border-primary text-text-secondary hover:bg-surface-hover'}`}
+                        >
                             All
                         </button>
-                        {categories.slice(0, 6).map(category => (
-                            <button key={category.id} className="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-primary border border-border-primary text-text-secondary hover:bg-surface-hover text-sm font-medium transition-colors">
+                        {categories.map(category => (
+                            <button 
+                                key={category.id} 
+                                onClick={() => handleCategoryClick(category.slug)}
+                                className={`whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === category.slug ? 'bg-accent-primary text-white' : 'bg-surface-primary border border-border-primary text-text-secondary hover:bg-surface-hover'}`}
+                            >
                                 {category.name}
                             </button>
                         ))}
@@ -127,9 +219,103 @@ const BrowsePage = () => {
                         </div>
                         <h3 className="text-lg font-medium text-text-primary">No software found</h3>
                         <p className="mt-1 text-text-secondary">We couldn't find any listings matching your criteria.</p>
+                        {activeFiltersCount > 0 && (
+                            <button 
+                                onClick={() => {
+                                    setSearchInput("");
+                                    setActiveSearch("");
+                                    setSelectedCategory("");
+                                    setSelectedTechs([]);
+                                    setMinPrice("");
+                                    setMaxPrice("");
+                                }}
+                                className="mt-4 text-accent-primary hover:underline text-sm font-medium"
+                            >
+                                Clear all filters
+                            </button>
+                        )}
                     </div>
                 )}
             </div>
+
+            {/* Advanced Filters Drawer */}
+            <Drawer 
+                isOpen={isDrawerOpen} 
+                onClose={() => setIsDrawerOpen(false)} 
+                title="Filters"
+            >
+                <div className="space-y-8">
+                    {/* Price Filter */}
+                    <div>
+                        <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider mb-4">Price Range</h3>
+                        <div className="flex items-center gap-2">
+                            <div className="relative flex-1">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-secondary">₱</div>
+                                <input 
+                                    type="number" 
+                                    min="0"
+                                    value={minPrice}
+                                    onChange={(e) => { setMinPrice(e.target.value); setCurrentPage(1); }}
+                                    placeholder="Min" 
+                                    className="block w-full pl-8 pr-3 py-2 border border-border-primary rounded-md text-sm bg-surface-primary text-text-primary focus:ring-accent-primary focus:border-accent-primary"
+                                />
+                            </div>
+                            <span className="text-text-secondary">-</span>
+                            <div className="relative flex-1">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-secondary">₱</div>
+                                <input 
+                                    type="number" 
+                                    min="0"
+                                    value={maxPrice}
+                                    onChange={(e) => { setMaxPrice(e.target.value); setCurrentPage(1); }}
+                                    placeholder="Max" 
+                                    className="block w-full pl-8 pr-3 py-2 border border-border-primary rounded-md text-sm bg-surface-primary text-text-primary focus:ring-accent-primary focus:border-accent-primary"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Technologies Filter */}
+                    <div>
+                        <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider mb-4">Technologies</h3>
+                        <div className="space-y-2">
+                            {technologies.map(tech => (
+                                <label key={tech.id} className="flex items-center group cursor-pointer">
+                                    <input 
+                                        type="checkbox"
+                                        checked={selectedTechs.includes(tech.slug)}
+                                        onChange={() => toggleTech(tech.slug)}
+                                        className="h-4 w-4 rounded border-border-primary text-accent-primary focus:ring-accent-primary/20 bg-background-primary cursor-pointer transition-colors"
+                                    />
+                                    <span className="ml-3 text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                                        {tech.name}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-border-primary">
+                    <button 
+                        onClick={() => {
+                            setSelectedTechs([]);
+                            setMinPrice("");
+                            setMaxPrice("");
+                            setCurrentPage(1);
+                        }}
+                        className="w-full py-2 px-4 border border-border-primary rounded-lg text-sm font-medium text-text-secondary hover:bg-background-secondary transition-colors"
+                    >
+                        Reset Filters
+                    </button>
+                    <button 
+                        onClick={() => setIsDrawerOpen(false)}
+                        className="w-full mt-3 py-2 px-4 bg-accent-primary rounded-lg text-sm font-medium text-white hover:bg-accent-hover transition-colors shadow-sm"
+                    >
+                        Apply Filters
+                    </button>
+                </div>
+            </Drawer>
         </div>
     );
 };

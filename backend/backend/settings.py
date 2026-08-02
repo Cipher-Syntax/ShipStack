@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'anymail',
+    'django_filters',
     
     'cloudinary_storage',
     'cloudinary',

@@ -7,6 +7,10 @@ from .serializers import ListingSerializer, ListingMediaSerializer, SoftwarePack
 from .tasks import scan_package_for_malware
 from rest_framework.parsers import MultiPartParser, FormParser
 
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+from .filters import ListingFilter
+
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 12
     page_size_query_param = 'page_size'
@@ -16,9 +20,14 @@ class PublicListingListView(generics.ListAPIView):
     serializer_class = PublicListingSerializer
     permission_classes = [permissions.AllowAny]
     pagination_class = StandardResultsSetPagination
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_class = ListingFilter
+    search_fields = ['title', 'short_description', 'full_description']
+    ordering_fields = ['created_at', 'price']
+    ordering = ['-created_at']
 
     def get_queryset(self):
-        queryset = Listing.objects.filter(status=Listing.StatusChoices.PUBLISHED).order_by('-created_at')
+        queryset = Listing.objects.filter(status=Listing.StatusChoices.PUBLISHED)
         author_slug = self.request.query_params.get('author')
         if author_slug:
             queryset = queryset.filter(authors__developer_profile__slug=author_slug)
