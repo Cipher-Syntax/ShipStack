@@ -39,6 +39,15 @@ const CardContent = forwardRef(({ className, ...props }, ref) => (
 ));
 CardContent.displayName = "CardContent";
 
+const CardDescription = forwardRef(({ className, ...props }, ref) => (
+    <p
+        ref={ref}
+        className={cn("text-sm text-text-secondary", className)}
+        {...props}
+    />
+));
+CardDescription.displayName = "CardDescription";
+
 const CardFooter = forwardRef(({ className, ...props }, ref) => (
     <div
         ref={ref}
@@ -48,4 +57,11 @@ const CardFooter = forwardRef(({ className, ...props }, ref) => (
 ));
 CardFooter.displayName = "CardFooter";
 
-export { Card, CardHeader, CardTitle, CardContent, CardFooter };
+export {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+    CardContent,
+    CardFooter,
+};
