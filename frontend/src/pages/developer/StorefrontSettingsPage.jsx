@@ -295,7 +295,7 @@ const StorefrontSettingsPage = () => {
                                         <label className="text-xs font-bold text-text-primary uppercase tracking-wide">URL Slug</label>
                                         <div className="flex rounded-md overflow-hidden border border-border-primary focus-within:border-accent-primary focus-within:ring-1 focus-within:ring-accent-primary transition-all h-11">
                                             <span className="bg-background-tertiary px-3 flex items-center text-text-secondary text-sm font-medium border-r border-border-primary">
-                                                shipstack.com/store/
+                                                {window.location.host}/store/
                                             </span>
                                             <input
                                                 name="slug"
