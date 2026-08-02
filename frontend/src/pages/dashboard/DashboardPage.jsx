@@ -10,7 +10,7 @@ const DashboardPage = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     return (
-        <div className="min-h-screen bg-background-primary flex font-sans overflow-hidden">
+        <div className="h-screen w-full bg-background-primary flex font-sans overflow-hidden">
             
             {/* Mobile Sidebar Overlay */}
             {isMobileMenuOpen && (
@@ -22,7 +22,7 @@ const DashboardPage = () => {
 
             {/* Sidebar */}
             <aside className={`
-                fixed md:static inset-y-0 left-0 z-50 h-full
+                fixed md:static inset-y-0 left-0 z-50
                 ${isSidebarOpen ? 'w-64' : 'w-20'} 
                 ${isMobileMenuOpen ? 'translate-x-0 flex w-64' : '-translate-x-full md:translate-x-0 flex'}
                 bg-background-secondary border-r border-border-primary flex-col justify-between transition-all duration-300
