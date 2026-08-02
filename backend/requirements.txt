@@ -11,3 +11,4 @@ dj-database-url
 cloudinary
 django-cloudinary-storage
 django-anymail[sendinblue]
+django-filter

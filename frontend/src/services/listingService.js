@@ -60,10 +60,16 @@ export const getTags = async () => {
 };
 
 export const getPublicListings = async (page = 1, filters = {}) => {
-    let url = `/api/listings/public/?page=${page}`;
-    if (filters.author) {
-        url += `&author=${filters.author}`;
-    }
-    const response = await api.get(url);
+    const params = new URLSearchParams({ page });
+    
+    if (filters.author) params.append('author', filters.author);
+    if (filters.search) params.append('search', filters.search);
+    if (filters.category) params.append('category', filters.category);
+    if (filters.technologies) params.append('technologies', filters.technologies);
+    if (filters.min_price) params.append('min_price', filters.min_price);
+    if (filters.max_price) params.append('max_price', filters.max_price);
+    if (filters.ordering) params.append('ordering', filters.ordering);
+
+    const response = await api.get(`/api/listings/public/?${params.toString()}`);
     return response.data;
 };
