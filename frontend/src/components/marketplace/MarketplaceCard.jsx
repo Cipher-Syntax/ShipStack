@@ -66,7 +66,7 @@ const MarketplaceCard = ({ listing }) => {
                             )}
                         </div>
                         <div className="font-bold text-text-primary">
-                            ${listing.price}
+                            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(listing.price)}
                         </div>
                     </div>
                 </CardContent>
