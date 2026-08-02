@@ -54,6 +54,21 @@ INSTALLED_APPS = [
     'cloudinary',
     
     # OWN APPS
+    'apps.common',
+    'apps.accounts',
+    'apps.developers',
+    'apps.marketplace',
+    'apps.listings',
+    'apps.purchases',
+    'apps.licenses',
+    'apps.releases',
+    'apps.software_requests',
+    'apps.reviews',
+    'apps.messaging',
+    'apps.notifications',
+    'apps.dashboard',
+    'apps.platform_admin',
+    'apps.platform_audit',
 ]
 
 
@@ -216,3 +231,19 @@ ANYMAIL = {
 EMAIL_BACKEND = 'anymail.backends.sendinblue.EmailBackend'
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 ADMIN_SUPPORT = config('ADMIN_SUPPORT')
+
+# Caching Configuration
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': config('REDIS_URL', default='redis://127.0.0.1:6379/1'),
+    }
+}
+
+# Celery Configuration
+CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://127.0.0.1:6379/0')
+CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND', default='redis://127.0.0.1:6379/0')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
