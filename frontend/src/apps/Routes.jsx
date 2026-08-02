@@ -18,6 +18,9 @@ import ListingDetailsPage from "../pages/developer/editor/ListingDetailsPage";
 import ListingMediaPage from "../pages/developer/editor/ListingMediaPage";
 import ListingPreviewPage from "../pages/developer/editor/ListingPreviewPage";
 
+import HomePage from "../pages/marketplace/HomePage";
+import BrowsePage from "../pages/marketplace/BrowsePage";
+
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated, isLoading } = useAuth();
     if (isLoading) return <div>Loading...</div>;
@@ -35,6 +38,9 @@ const AuthRoute = ({ children }) => {
 const AppRoutes = () => {
     return (
         <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/browse" element={<BrowsePage />} />
+            
             <Route
                 path="/login"
                 element={
@@ -123,7 +129,7 @@ const AppRoutes = () => {
                 }
             />
 
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
     );
 };

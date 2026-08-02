@@ -26,4 +26,34 @@ class ListingSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['status', 'authors', 'created_at', 'updated_at']
 
+from django.contrib.auth import get_user_model
+from apps.marketplace.serializers import CategorySerializer
 
+class PublicAuthorSerializer(serializers.ModelSerializer):
+    store_name = serializers.CharField(source='developer_profile.store_name', read_only=True)
+    logo = serializers.ImageField(source='developer_profile.logo', read_only=True)
+    
+    class Meta:
+        model = get_user_model()
+        fields = ['id', 'username', 'store_name', 'logo']
+
+class PublicListingSerializer(serializers.ModelSerializer):
+    authors = PublicAuthorSerializer(many=True, read_only=True)
+    category = CategorySerializer(read_only=True)
+    cover_image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Listing
+        fields = [
+            'id', 'title', 'slug', 'short_description', 
+            'price', 'category', 'authors', 'cover_image_url'
+        ]
+
+    def get_cover_image_url(self, obj):
+        cover = obj.media.filter(media_type=ListingMedia.MediaTypeChoices.COVER).first()
+        if cover and cover.file:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(cover.file.url)
+            return cover.file.url
+        return None

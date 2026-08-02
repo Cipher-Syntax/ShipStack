@@ -58,3 +58,8 @@ export const getTags = async () => {
     const response = await api.get('/api/marketplace/tags/');
     return response.data;
 };
+
+export const getPublicListings = async (page = 1) => {
+    const response = await api.get(`/api/listings/public/?page=${page}`);
+    return response.data;
+};
