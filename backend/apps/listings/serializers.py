@@ -57,3 +57,19 @@ class PublicListingSerializer(serializers.ModelSerializer):
                 return request.build_absolute_uri(cover.file.url)
             return cover.file.url
         return None
+
+from apps.marketplace.serializers import TechnologySerializer, TagSerializer
+
+class PublicListingDetailSerializer(serializers.ModelSerializer):
+    authors = PublicAuthorSerializer(many=True, read_only=True)
+    category = CategorySerializer(read_only=True)
+    technologies = TechnologySerializer(many=True, read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
+    media = ListingMediaSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Listing
+        fields = [
+            'id', 'title', 'slug', 'short_description', 'full_description',
+            'price', 'category', 'authors', 'technologies', 'tags', 'media', 'created_at'
+        ]
