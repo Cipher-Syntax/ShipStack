@@ -1,8 +1,10 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import Listing
-from .serializers import ListingSerializer
+from .models import Listing, ListingMedia, SoftwarePackage
+from .serializers import ListingSerializer, ListingMediaSerializer, SoftwarePackageSerializer
+from .tasks import scan_package_for_malware
+from rest_framework.parsers import MultiPartParser, FormParser
 
 class ListingViewSet(viewsets.ModelViewSet):
     serializer_class = ListingSerializer
@@ -45,3 +47,25 @@ class ListingViewSet(viewsets.ModelViewSet):
         listing.status = Listing.StatusChoices.PENDING_REVIEW
         listing.save()
         return Response({"detail": "Listing submitted for review.", "status": listing.status})
+
+    @action(detail=True, methods=['post'], parser_classes=[MultiPartParser, FormParser])
+    def media(self, request, pk=None):
+        listing = self.get_object()
+        serializer = ListingMediaSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(listing=listing)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'], parser_classes=[MultiPartParser, FormParser])
+    def packages(self, request, pk=None):
+        listing = self.get_object()
+        serializer = SoftwarePackageSerializer(data=request.data)
+        if serializer.is_valid():
+            package = serializer.save(listing=listing)
+            
+            # Trigger background scan
+            scan_package_for_malware.delay(package.id)
+            
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

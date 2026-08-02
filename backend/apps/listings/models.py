@@ -27,3 +27,36 @@ class Listing(models.Model):
 
     def __str__(self):
         return self.title
+
+class ListingMedia(models.Model):
+    class MediaTypeChoices(models.TextChoices):
+        COVER = 'COVER', 'Cover Image'
+        SCREENSHOT = 'SCREENSHOT', 'Screenshot'
+        DOCUMENTATION = 'DOCUMENTATION', 'Documentation'
+
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='media')
+    file = models.FileField(upload_to='listings/media/')
+    media_type = models.CharField(max_length=20, choices=MediaTypeChoices.choices)
+    order = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'created_at']
+
+    def __str__(self):
+        return f"{self.listing.title} - {self.media_type}"
+
+class SoftwarePackage(models.Model):
+    class ScanStatusChoices(models.TextChoices):
+        PENDING = 'PENDING', 'Pending'
+        PASSED = 'PASSED', 'Passed'
+        FAILED = 'FAILED', 'Failed'
+
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='packages')
+    file = models.FileField(upload_to='listings/packages/')
+    scan_status = models.CharField(max_length=20, choices=ScanStatusChoices.choices, default=ScanStatusChoices.PENDING)
+    scan_results = models.TextField(blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Package for {self.listing.title} ({self.scan_status})"
