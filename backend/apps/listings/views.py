@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from .models import Listing, ListingMedia, SoftwarePackage
-from .serializers import ListingSerializer, ListingMediaSerializer, SoftwarePackageSerializer, PublicListingSerializer
+from .serializers import ListingSerializer, ListingMediaSerializer, SoftwarePackageSerializer, PublicListingSerializer, PublicListingDetailSerializer
 from .tasks import scan_package_for_malware
 from rest_framework.parsers import MultiPartParser, FormParser
 
@@ -32,6 +32,14 @@ class PublicListingListView(generics.ListAPIView):
         if author_slug:
             queryset = queryset.filter(authors__developer_profile__slug=author_slug)
         return queryset
+
+class PublicListingDetailView(generics.RetrieveAPIView):
+    serializer_class = PublicListingDetailSerializer
+    permission_classes = [permissions.AllowAny]
+    lookup_field = 'slug'
+
+    def get_queryset(self):
+        return Listing.objects.filter(status=Listing.StatusChoices.PUBLISHED)
 
 class ListingViewSet(viewsets.ModelViewSet):
     serializer_class = ListingSerializer

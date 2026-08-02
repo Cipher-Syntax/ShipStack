@@ -31,11 +31,12 @@ from apps.marketplace.serializers import CategorySerializer
 
 class PublicAuthorSerializer(serializers.ModelSerializer):
     store_name = serializers.CharField(source='developer_profile.store_name', read_only=True)
+    store_slug = serializers.CharField(source='developer_profile.slug', read_only=True)
     logo = serializers.ImageField(source='developer_profile.logo', read_only=True)
     
     class Meta:
         model = get_user_model()
-        fields = ['id', 'username', 'store_name', 'logo']
+        fields = ['id', 'username', 'store_name', 'store_slug', 'logo']
 
 class PublicListingSerializer(serializers.ModelSerializer):
     authors = PublicAuthorSerializer(many=True, read_only=True)
@@ -57,3 +58,19 @@ class PublicListingSerializer(serializers.ModelSerializer):
                 return request.build_absolute_uri(cover.file.url)
             return cover.file.url
         return None
+
+from apps.marketplace.serializers import TechnologySerializer, TagSerializer
+
+class PublicListingDetailSerializer(serializers.ModelSerializer):
+    authors = PublicAuthorSerializer(many=True, read_only=True)
+    category = CategorySerializer(read_only=True)
+    technologies = TechnologySerializer(many=True, read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
+    media = ListingMediaSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Listing
+        fields = [
+            'id', 'title', 'slug', 'short_description', 'full_description',
+            'price', 'category', 'authors', 'technologies', 'tags', 'media', 'created_at'
+        ]

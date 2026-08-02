@@ -73,3 +73,8 @@ export const getPublicListings = async (page = 1, filters = {}) => {
     const response = await api.get(`/api/listings/public/?${params.toString()}`);
     return response.data;
 };
+
+export const getPublicListing = async (slug) => {
+    const response = await api.get(`/api/listings/public/${slug}/`);
+    return response.data;
+};
