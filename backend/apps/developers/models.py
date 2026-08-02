@@ -1,3 +1,19 @@
 from django.db import models
+from django.conf import settings
 
-# Create your models here.
+class DeveloperProfile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='developer_profile')
+    store_name = models.CharField(max_length=255, unique=True)
+    slug = models.SlugField(max_length=255, unique=True)
+    logo = models.ImageField(upload_to='developer_logos/', blank=True, null=True)
+    banner = models.ImageField(upload_to='developer_banners/', blank=True, null=True)
+    biography = models.TextField(blank=True)
+    github_url = models.URLField(blank=True, null=True)
+    website_url = models.URLField(blank=True, null=True)
+    twitter_url = models.URLField(blank=True, null=True)
+    linkedin_url = models.URLField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.store_name
