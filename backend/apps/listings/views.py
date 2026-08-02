@@ -1,10 +1,28 @@
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, generics
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 from .models import Listing, ListingMedia, SoftwarePackage
-from .serializers import ListingSerializer, ListingMediaSerializer, SoftwarePackageSerializer
+from .serializers import ListingSerializer, ListingMediaSerializer, SoftwarePackageSerializer, PublicListingSerializer
 from .tasks import scan_package_for_malware
 from rest_framework.parsers import MultiPartParser, FormParser
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 12
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+class PublicListingListView(generics.ListAPIView):
+    serializer_class = PublicListingSerializer
+    permission_classes = [permissions.AllowAny]
+    pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+        queryset = Listing.objects.filter(status=Listing.StatusChoices.PUBLISHED).order_by('-created_at')
+        author_slug = self.request.query_params.get('author')
+        if author_slug:
+            queryset = queryset.filter(authors__developer_profile__slug=author_slug)
+        return queryset
 
 class ListingViewSet(viewsets.ModelViewSet):
     serializer_class = ListingSerializer

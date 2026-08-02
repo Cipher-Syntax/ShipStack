@@ -5,19 +5,25 @@ import {
     Hash,
     Briefcase,
     Globe,
-    MapPin,
+    CheckCircle,
     Package,
     Star,
     Clock,
-    CheckCircle,
 } from "lucide-react";
 import api from "../../utils/api";
+import { getPublicListings } from "../../services/listingService";
+import MarketplaceCard from "../../components/marketplace/MarketplaceCard";
+import { Pagination } from "../../components/ui/pagination";
 
 const StorefrontPage = () => {
     const { slug } = useParams();
     const [profile, setProfile] = useState(null);
+    const [listings, setListings] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [listingsLoading, setListingsLoading] = useState(true);
     const [error, setError] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -32,6 +38,31 @@ const StorefrontPage = () => {
         };
         fetchProfile();
     }, [slug]);
+
+    useEffect(() => {
+        if (!profile) return;
+        
+        const fetchListings = async () => {
+            setListingsLoading(true);
+            try {
+                const data = await getPublicListings(currentPage, { author: slug });
+                setListings(data.results || data);
+                if (data.count !== undefined) {
+                    setTotalPages(Math.ceil(data.count / 12));
+                }
+            } catch (err) {
+                console.error("Failed to fetch listings", err);
+            } finally {
+                setListingsLoading(false);
+            }
+        };
+        fetchListings();
+    }, [profile, currentPage, slug]);
+
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+        window.scrollTo({ top: 300, behavior: 'smooth' });
+    };
 
     if (loading)
         return (
@@ -178,7 +209,7 @@ const StorefrontPage = () => {
                                     <Package size={16} /> Products
                                 </span>
                                 <span className="font-semibold text-text-primary">
-                                    0 published
+                                    {listings.length} published
                                 </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
@@ -205,29 +236,54 @@ const StorefrontPage = () => {
                     </div>
                 </div>
 
-                {/* Right Column: Featured Software (Placeholder) */}
+                {/* Right Column: Featured Software */}
                 <div className="lg:col-span-2 space-y-8">
                     <div>
                         <h2 className="text-3xl font-display font-bold text-text-primary mb-6">
                             Featured Software
                         </h2>
 
-                        <div className="w-full rounded-2xl border border-dashed border-border-primary p-12 flex flex-col items-center justify-center text-center bg-background-secondary/50 group">
-                            <div className="w-20 h-20 bg-background-primary rounded-2xl shadow-sm flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                                <Package
-                                    size={32}
-                                    className="text-accent-primary opacity-80"
-                                />
+                        {listingsLoading ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                {[1, 2, 3, 4].map(i => (
+                                    <div key={i} className="animate-pulse bg-surface-primary border border-border-primary rounded-lg h-[340px]"></div>
+                                ))}
                             </div>
-                            <h3 className="text-xl font-bold text-text-primary mb-2">
-                                No Software Published Yet
-                            </h3>
-                            <p className="text-text-secondary max-w-md">
-                                {profile.store_name} hasn't published any
-                                software to the marketplace yet. Check back
-                                later for high-quality production-ready tools!
-                            </p>
-                        </div>
+                        ) : listings.length > 0 ? (
+                            <>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    {listings.map(listing => (
+                                        <MarketplaceCard key={listing.id} listing={listing} />
+                                    ))}
+                                </div>
+                                {totalPages > 1 && (
+                                    <div className="mt-8">
+                                        <Pagination 
+                                            currentPage={currentPage}
+                                            totalPages={totalPages}
+                                            onPageChange={handlePageChange}
+                                        />
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            <div className="w-full rounded-2xl border border-dashed border-border-primary p-12 flex flex-col items-center justify-center text-center bg-background-secondary/50 group">
+                                <div className="w-20 h-20 bg-background-primary rounded-2xl shadow-sm flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                                    <Package
+                                        size={32}
+                                        className="text-accent-primary opacity-80"
+                                    />
+                                </div>
+                                <h3 className="text-xl font-bold text-text-primary mb-2">
+                                    No Software Published Yet
+                                </h3>
+                                <p className="text-text-secondary max-w-md">
+                                    {profile.store_name} hasn't published any
+                                    software to the marketplace yet. Check back
+                                    later for high-quality production-ready tools!
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

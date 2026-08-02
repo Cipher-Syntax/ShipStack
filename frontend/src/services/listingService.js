@@ -58,3 +58,12 @@ export const getTags = async () => {
     const response = await api.get('/api/marketplace/tags/');
     return response.data;
 };
+
+export const getPublicListings = async (page = 1, filters = {}) => {
+    let url = `/api/listings/public/?page=${page}`;
+    if (filters.author) {
+        url += `&author=${filters.author}`;
+    }
+    const response = await api.get(url);
+    return response.data;
+};
