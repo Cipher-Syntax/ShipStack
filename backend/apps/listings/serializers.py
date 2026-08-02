@@ -10,3 +10,17 @@ class ListingSerializer(serializers.ModelSerializer):
             'created_at', 'updated_at'
         ]
         read_only_fields = ['status', 'authors', 'created_at', 'updated_at']
+
+from .models import ListingMedia, SoftwarePackage
+
+class ListingMediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ListingMedia
+        fields = ['id', 'file', 'media_type', 'order', 'created_at']
+        read_only_fields = ['created_at']
+
+class SoftwarePackageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SoftwarePackage
+        fields = ['id', 'file', 'scan_status', 'scan_results', 'uploaded_at']
+        read_only_fields = ['scan_status', 'scan_results', 'uploaded_at']
