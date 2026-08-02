@@ -23,6 +23,7 @@ const StorefrontSettingsPage = () => {
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(true);
     const [error, setError] = useState("");
+    const [fieldErrors, setFieldErrors] = useState({});
     const [success, setSuccess] = useState("");
 
     const [formData, setFormData] = useState({
@@ -71,6 +72,10 @@ const StorefrontSettingsPage = () => {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        // Clear field error when user types
+        if (fieldErrors[e.target.name]) {
+            setFieldErrors({ ...fieldErrors, [e.target.name]: null });
+        }
     };
 
     const handleFileChange = (e, type) => {
@@ -89,6 +94,7 @@ const StorefrontSettingsPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+        setFieldErrors({});
         setSuccess("");
         setLoading(true);
 
@@ -111,11 +117,18 @@ const StorefrontSettingsPage = () => {
             // Auto hide success after 3 seconds
             setTimeout(() => setSuccess(""), 3000);
         } catch (err) {
-            setError(
-                err.response?.data?.error ||
-                    err.response?.data?.slug?.[0] ||
-                    "Failed to update profile.",
-            );
+            if (err.response?.data) {
+                if (err.response.data.error) {
+                    setError(err.response.data.error);
+                } else if (typeof err.response.data === "object") {
+                    setFieldErrors(err.response.data);
+                    setError("Please fix the validation errors below.");
+                } else {
+                    setError("Failed to update profile.");
+                }
+            } else {
+                setError("Failed to update profile.");
+            }
         } finally {
             setLoading(false);
         }
@@ -243,6 +256,7 @@ const StorefrontSettingsPage = () => {
                                             required
                                             className="h-11 bg-background-primary border-border-primary font-medium text-lg placeholder:font-normal focus:border-accent-primary"
                                         />
+                                        {fieldErrors.store_name && <p className="text-red-500 text-xs font-medium">{fieldErrors.store_name[0]}</p>}
                                     </div>
                                     <div className="space-y-1.5">
                                         <label className="text-xs font-bold text-text-primary uppercase tracking-wide">URL Slug</label>
@@ -259,6 +273,7 @@ const StorefrontSettingsPage = () => {
                                                 className="flex-1 bg-background-primary px-3 text-sm focus:outline-none font-medium h-full"
                                             />
                                         </div>
+                                        {fieldErrors.slug && <p className="text-red-500 text-xs font-medium">{fieldErrors.slug[0]}</p>}
                                     </div>
                                 </div>
                             </div>
@@ -292,6 +307,7 @@ const StorefrontSettingsPage = () => {
                                 placeholder="We specialize in enterprise-grade React and Django applications..."
                                 className="w-full min-h-[200px] rounded-xl border border-border-primary bg-background-primary p-4 text-sm focus:outline-none focus:ring-2 focus:ring-focus-ring resize-y leading-relaxed"
                             />
+                            {fieldErrors.biography && <p className="text-red-500 text-xs font-medium">{fieldErrors.biography[0]}</p>}
                         </div>
                     </section>
 
@@ -319,6 +335,7 @@ const StorefrontSettingsPage = () => {
                                     placeholder="https://..."
                                     className="bg-background-primary h-11"
                                 />
+                                {fieldErrors.website_url && <p className="text-red-500 text-xs font-medium">{fieldErrors.website_url[0]}</p>}
                             </div>
                             
                             <div className="space-y-1.5">
@@ -333,6 +350,7 @@ const StorefrontSettingsPage = () => {
                                     placeholder="https://github.com/..."
                                     className="bg-background-primary h-11"
                                 />
+                                {fieldErrors.github_url && <p className="text-red-500 text-xs font-medium">{fieldErrors.github_url[0]}</p>}
                             </div>
 
                             <div className="space-y-1.5">
@@ -347,6 +365,7 @@ const StorefrontSettingsPage = () => {
                                     placeholder="https://linkedin.com/in/..."
                                     className="bg-background-primary h-11"
                                 />
+                                {fieldErrors.linkedin_url && <p className="text-red-500 text-xs font-medium">{fieldErrors.linkedin_url[0]}</p>}
                             </div>
 
                             <div className="space-y-1.5">
@@ -361,6 +380,7 @@ const StorefrontSettingsPage = () => {
                                     placeholder="https://twitter.com/..."
                                     className="bg-background-primary h-11"
                                 />
+                                {fieldErrors.twitter_url && <p className="text-red-500 text-xs font-medium">{fieldErrors.twitter_url[0]}</p>}
                             </div>
                         </div>
                     </section>
