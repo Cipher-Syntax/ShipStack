@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'apps.dashboard',
     'apps.platform_admin',
     'apps.platform_audit',
+    'apps.commerce',
 ]
 
 
@@ -223,6 +224,7 @@ if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 
 BACKEND_URL = config('BACKEND_URL')
+FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:5173')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -249,3 +251,7 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
+
+# Paymongo
+PAYMONGO_SECRET_KEY = config('PAYMONGO_SECRET_KEY', default='')
+PAYMONGO_WEBHOOK_SECRET_KEY = config('PAYMONGO_WEBHOOK_SECRET_KEY', default='')

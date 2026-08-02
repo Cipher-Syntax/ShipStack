@@ -21,6 +21,8 @@ import ListingPreviewPage from "../pages/developer/editor/ListingPreviewPage";
 import HomePage from "../pages/marketplace/HomePage";
 import BrowsePage from "../pages/marketplace/BrowsePage";
 import ListingDetailPage from "../pages/marketplace/ListingDetailPage";
+import CheckoutSuccessPage from "../pages/marketplace/CheckoutSuccessPage";
+import CheckoutCanceledPage from "../pages/marketplace/CheckoutCanceledPage";
 
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated, isLoading } = useAuth();
@@ -42,6 +44,8 @@ const AppRoutes = () => {
             <Route path="/" element={<HomePage />} />
             <Route path="/browse" element={<BrowsePage />} />
             <Route path="/listings/:slug" element={<ListingDetailPage />} />
+            <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
+            <Route path="/checkout/canceled" element={<CheckoutCanceledPage />} />
             
             <Route
                 path="/login"

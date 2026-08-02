@@ -4,6 +4,8 @@ import { getPublicListing } from '../../services/listingService';
 import ReactMarkdown from 'react-markdown';
 import { ChevronRight, Package, ShieldCheck, Tag as TagIcon, Star, Code } from 'lucide-react';
 import { Button } from '../../components/ui/button';
+import { useAuth } from '../../contexts/AuthContext';
+import { commerceService } from '../../services/commerceService';
 
 const ListingDetailPage = () => {
     const { slug } = useParams();
@@ -11,6 +13,8 @@ const ListingDetailPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [activeImage, setActiveImage] = useState(null);
+    const { user } = useAuth();
+    const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
 
     useEffect(() => {
         const fetchListing = async () => {
@@ -56,6 +60,27 @@ const ListingDetailPage = () => {
             </div>
         );
     }
+
+    const handleCheckout = async () => {
+        if (!user) {
+            // Unauthenticated: we could redirect to login and pass redirect param, for now just simple redirect
+            window.location.href = `/login?redirect=/listings/${slug}`;
+            return;
+        }
+        
+        setIsCheckoutLoading(true);
+        try {
+            const data = await commerceService.createCheckoutSession(listing.id);
+            if (data.checkout_url) {
+                window.location.href = data.checkout_url;
+            }
+        } catch (err) {
+            console.error(err);
+            alert(err.response?.data?.error || "Failed to initiate checkout. Please try again.");
+        } finally {
+            setIsCheckoutLoading(false);
+        }
+    };
 
     const author = listing.authors?.[0];
     const authorName = author?.store_name || author?.username || 'Unknown Developer';
@@ -162,8 +187,13 @@ const ListingDetailPage = () => {
                                     </div>
                                 </div>
                                 
-                                <Button variant="primary" className="w-full h-12 text-base font-bold shadow-sm mb-4">
-                                    Buy Now
+                                <Button 
+                                    variant="primary" 
+                                    className="w-full h-12 text-base font-bold shadow-sm mb-4"
+                                    onClick={handleCheckout}
+                                    disabled={isCheckoutLoading}
+                                >
+                                    {isCheckoutLoading ? 'Processing...' : (user ? 'Buy Now' : 'Login to Purchase')}
                                 </Button>
                                 
                                 <div className="space-y-3 text-sm text-text-secondary">
