@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
@@ -14,7 +15,9 @@ import {
     Globe,
     Store,
     Image as ImageIcon,
-    Camera
+    Camera,
+    ArrowLeft,
+    ExternalLink
 } from "lucide-react";
 import api from "../../utils/api";
 
@@ -169,6 +172,13 @@ const StorefrontSettingsPage = () => {
 
     return (
         <div className="p-4 sm:p-8 max-w-7xl mx-auto font-sans w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Navigation Header */}
+            <div className="mb-6">
+                <Link to="/dashboard" className="inline-flex items-center gap-2 text-sm font-medium text-text-tertiary hover:text-text-primary transition-colors">
+                    <ArrowLeft size={16} /> Back to Dashboard
+                </Link>
+            </div>
+
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
                     <h1 className="text-3xl md:text-4xl font-display font-bold text-text-primary mb-1">
@@ -178,22 +188,34 @@ const StorefrontSettingsPage = () => {
                         Design your public developer profile and establish your brand.
                     </p>
                 </div>
-                <Button
-                    onClick={handleSubmit}
-                    disabled={loading}
-                    className="h-11 px-6 font-bold shadow-md hover:shadow-lg transition-all"
-                >
-                    {loading ? (
-                        <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                            Saving...
-                        </div>
-                    ) : (
-                        <div className="flex items-center gap-2">
-                            <Save size={18} /> Save Changes
-                        </div>
+                <div className="flex items-center gap-3">
+                    {formData.slug && (
+                        <a
+                            href={`/store/${formData.slug}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="h-11 px-4 flex items-center gap-2 font-bold text-sm bg-background-secondary border border-border-primary hover:bg-background-tertiary rounded-md transition-colors"
+                        >
+                            <ExternalLink size={18} /> View Live Storefront
+                        </a>
                     )}
-                </Button>
+                    <Button
+                        onClick={handleSubmit}
+                        disabled={loading}
+                        className="h-11 px-6 font-bold shadow-md hover:shadow-lg transition-all"
+                    >
+                        {loading ? (
+                            <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                Saving...
+                            </div>
+                        ) : (
+                            <div className="flex items-center gap-2">
+                                <Save size={18} /> Save Changes
+                            </div>
+                        )}
+                    </Button>
+                </div>
             </div>
 
             {error && (
