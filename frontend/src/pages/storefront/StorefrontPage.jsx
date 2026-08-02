@@ -78,42 +78,42 @@ const StorefrontPage = () => {
             </div>
 
             {/* Profile Header */}
-            <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative -mt-24">
-                <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start md:items-end">
-                    {/* Logo */}
-                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl bg-white p-2 shadow-xl ring-4 ring-background-primary z-10 shrink-0 transform transition-transform hover:-translate-y-2 duration-300">
+            <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative">
+                <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
+                    {/* Logo (Overlapping Banner) */}
+                    <div className="-mt-16 md:-mt-20 w-32 h-32 md:w-40 md:h-40 rounded-full bg-background-primary p-1.5 shadow-xl ring-1 ring-border-primary z-10 shrink-0">
                         {profile.logo ? (
                             <img
                                 src={profile.logo}
                                 alt={profile.store_name}
-                                className="w-full h-full rounded-xl object-cover"
+                                className="w-full h-full rounded-full object-cover"
                             />
                         ) : (
-                            <div className="w-full h-full rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-gray-400">
+                            <div className="w-full h-full rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-gray-400">
                                 <Package size={48} />
                             </div>
                         )}
                     </div>
 
-                    {/* Store Info */}
-                    <div className="flex-1 text-white z-10 md:pb-4 space-y-2">
-                        <div className="flex items-center gap-3">
-                            <h1 className="text-4xl md:text-5xl font-display font-bold text-white drop-shadow-md">
+                    {/* Store Info (Below Banner) */}
+                    <div className="flex-1 text-text-primary z-10 pt-4 md:pt-6 space-y-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                            <h1 className="text-3xl md:text-4xl font-display font-bold">
                                 {profile.store_name}
                             </h1>
-                            <div className="bg-blue-500/20 text-blue-200 px-3 py-1 rounded-full text-xs font-bold border border-blue-400/30 flex items-center gap-1 backdrop-blur-md">
+                            <div className="bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-xs font-bold border border-blue-500/20 flex items-center gap-1 w-fit">
                                 <CheckCircle size={14} /> Verified Developer
                             </div>
                         </div>
 
                         {/* Links Row */}
-                        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300 drop-shadow-sm pt-2">
+                        <div className="flex flex-wrap items-center gap-4 text-sm text-text-secondary pt-1">
                             {profile.website_url && (
                                 <a
                                     href={profile.website_url}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="flex items-center gap-1.5 hover:text-white transition-colors"
+                                    className="flex items-center gap-1.5 hover:text-accent-primary transition-colors"
                                 >
                                     <Globe size={16} /> Website
                                 </a>
@@ -123,7 +123,7 @@ const StorefrontPage = () => {
                                     href={profile.github_url}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="flex items-center gap-1.5 hover:text-white transition-colors"
+                                    className="flex items-center gap-1.5 hover:text-accent-primary transition-colors"
                                 >
                                     <Code size={16} /> GitHub
                                 </a>
@@ -133,7 +133,7 @@ const StorefrontPage = () => {
                                     href={profile.twitter_url}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="flex items-center gap-1.5 hover:text-blue-400 transition-colors"
+                                    className="flex items-center gap-1.5 hover:text-blue-500 transition-colors"
                                 >
                                     <Hash size={16} /> Twitter
                                 </a>
@@ -143,7 +143,7 @@ const StorefrontPage = () => {
                                     href={profile.linkedin_url}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="flex items-center gap-1.5 hover:text-blue-500 transition-colors"
+                                    className="flex items-center gap-1.5 hover:text-blue-600 transition-colors"
                                 >
                                     <Briefcase size={16} /> LinkedIn
                                 </a>
