@@ -11,6 +11,12 @@ import ApplyPage from "../pages/developer/ApplyPage";
 import StorefrontSettingsPage from "../pages/developer/StorefrontSettingsPage";
 import StorefrontPage from "../pages/storefront/StorefrontPage";
 import DashboardPage from "../pages/dashboard/DashboardPage";
+import MyListingsPage from "../pages/developer/MyListingsPage";
+import EditorLayout from "../layouts/EditorLayout";
+import ListingBasicsPage from "../pages/developer/editor/ListingBasicsPage";
+import ListingDetailsPage from "../pages/developer/editor/ListingDetailsPage";
+import ListingMediaPage from "../pages/developer/editor/ListingMediaPage";
+import ListingPreviewPage from "../pages/developer/editor/ListingPreviewPage";
 
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated, isLoading } = useAuth();
@@ -86,6 +92,27 @@ const AppRoutes = () => {
                     </ProtectedRoute>
                 }
             />
+            <Route
+                path="/developer/listings"
+                element={
+                    <ProtectedRoute>
+                        <MyListingsPage />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/developer/listings/:id"
+                element={
+                    <ProtectedRoute>
+                        <EditorLayout />
+                    </ProtectedRoute>
+                }
+            >
+                <Route path="basics" element={<ListingBasicsPage />} />
+                <Route path="details" element={<ListingDetailsPage />} />
+                <Route path="media" element={<ListingMediaPage />} />
+                <Route path="preview" element={<ListingPreviewPage />} />
+            </Route>
             <Route path="/store/:slug" element={<StorefrontPage />} />
             <Route
                 path="/dashboard"

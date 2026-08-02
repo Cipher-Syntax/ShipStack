@@ -67,13 +67,10 @@ const DashboardPage = () => {
                                     <Store size={18} className="shrink-0 group-hover:text-accent-primary transition-colors" />
                                     {isSidebarOpen && <span className="whitespace-nowrap">Storefront</span>}
                                 </Link>
-                                <button disabled className="w-full flex items-center justify-between px-3 py-2.5 text-text-tertiary opacity-70 cursor-not-allowed rounded-lg font-medium text-sm" title="My Software">
-                                    <div className="flex items-center gap-3">
-                                        <Code size={18} className="shrink-0" /> 
-                                        {isSidebarOpen && <span className="whitespace-nowrap">My Software</span>}
-                                    </div>
-                                    {isSidebarOpen && <span className="text-[10px] uppercase font-bold tracking-wider bg-border-primary px-1.5 py-0.5 rounded">Soon</span>}
-                                </button>
+                                <Link to="/developer/listings" className="flex items-center gap-3 px-3 py-2.5 text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-lg font-medium text-sm transition-colors group" title="My Software">
+                                    <Code size={18} className="shrink-0 group-hover:text-accent-primary transition-colors" />
+                                    {isSidebarOpen && <span className="whitespace-nowrap">My Software</span>}
+                                </Link>
                             </>
                         ) : (
                             <Link to="/developer/apply" className="flex items-center justify-between px-3 py-2.5 text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-lg font-medium text-sm transition-colors group" title="Become a Creator">

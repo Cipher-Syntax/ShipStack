@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from cloudinary_storage.storage import RawMediaCloudinaryStorage
 from apps.marketplace.models import Category, Technology, Tag
 
 class Listing(models.Model):
@@ -53,7 +54,7 @@ class SoftwarePackage(models.Model):
         FAILED = 'FAILED', 'Failed'
 
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='packages')
-    file = models.FileField(upload_to='listings/packages/')
+    file = models.FileField(upload_to='listings/packages/', storage=RawMediaCloudinaryStorage())
     scan_status = models.CharField(max_length=20, choices=ScanStatusChoices.choices, default=ScanStatusChoices.PENDING)
     scan_results = models.TextField(blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)

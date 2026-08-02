@@ -51,6 +51,11 @@ class ListingViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], parser_classes=[MultiPartParser, FormParser])
     def media(self, request, pk=None):
         listing = self.get_object()
+        
+        media_type = request.data.get('media_type')
+        if media_type == 'COVER':
+            ListingMedia.objects.filter(listing=listing, media_type='COVER').delete()
+
         serializer = ListingMediaSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(listing=listing)
