@@ -8,6 +8,9 @@ import VerifyEmailPage from "../pages/auth/VerifyEmailPage";
 import PasswordResetRequestPage from "../pages/auth/PasswordResetRequestPage";
 import PasswordResetConfirmPage from "../pages/auth/PasswordResetConfirmPage";
 import ApplyPage from "../pages/developer/ApplyPage";
+import StorefrontSettingsPage from "../pages/developer/StorefrontSettingsPage";
+import StorefrontPage from "../pages/storefront/StorefrontPage";
+import DashboardPage from "../pages/dashboard/DashboardPage";
 
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated, isLoading } = useAuth();
@@ -21,34 +24,7 @@ const AuthRoute = ({ children }) => {
     return isAuthenticated ? <Navigate to="/dashboard" replace /> : children;
 };
 
-// Temp dashboard component for testing
-const Dashboard = () => {
-    const { user, logout } = useAuth();
-    return (
-        <div className="p-8">
-            <h1 className="text-2xl font-bold mb-4">
-                Welcome, {user?.username}
-            </h1>
-            <button
-                className="bg-red-500 text-white px-4 py-2 rounded"
-                onClick={logout}
-            >
-                Logout
-            </button>
-
-            {!user?.is_verified_developer && (
-                <div className="mt-4">
-                    <a
-                        href="/developer/apply"
-                        className="text-blue-600 hover:underline"
-                    >
-                        Apply as a Developer
-                    </a>
-                </div>
-            )}
-        </div>
-    );
-};
+// Routes configuration
 
 const AppRoutes = () => {
     return (
@@ -103,10 +79,19 @@ const AppRoutes = () => {
                 }
             />
             <Route
+                path="/developer/storefront-settings"
+                element={
+                    <ProtectedRoute>
+                        <StorefrontSettingsPage />
+                    </ProtectedRoute>
+                }
+            />
+            <Route path="/store/:slug" element={<StorefrontPage />} />
+            <Route
                 path="/dashboard"
                 element={
                     <ProtectedRoute>
-                        <Dashboard />
+                        <DashboardPage />
                     </ProtectedRoute>
                 }
             />
