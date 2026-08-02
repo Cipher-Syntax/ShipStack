@@ -78,7 +78,6 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-        'apps.api.permissions.MaintenanceModePermission',
     ],
 }
 
@@ -144,6 +143,8 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 DATABASES = {
     'default': {
