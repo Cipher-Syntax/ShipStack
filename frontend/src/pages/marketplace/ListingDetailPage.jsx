@@ -59,7 +59,7 @@ const ListingDetailPage = () => {
 
     const author = listing.authors?.[0];
     const authorName = author?.store_name || author?.username || 'Unknown Developer';
-    const authorSlug = author?.username; // We might need a real slug here later, username works for now
+    const authorSlug = author?.store_slug || author?.username;
     
     const formattedPrice = new Intl.NumberFormat('en-PH', { 
         style: 'currency', 
@@ -72,7 +72,7 @@ const ListingDetailPage = () => {
     return (
         <div className="min-h-screen bg-background-primary pb-24">
             {/* Breadcrumbs */}
-            <div className="border-b border-border-primary bg-surface-primary sticky top-[72px] z-10">
+            <div className="border-b border-border-primary bg-surface-primary">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center text-sm">
                     <Link to="/" className="text-text-secondary hover:text-accent-primary transition-colors">Marketplace</Link>
                     <ChevronRight size={14} className="mx-2 text-text-tertiary" />

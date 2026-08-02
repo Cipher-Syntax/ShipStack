@@ -31,11 +31,12 @@ from apps.marketplace.serializers import CategorySerializer
 
 class PublicAuthorSerializer(serializers.ModelSerializer):
     store_name = serializers.CharField(source='developer_profile.store_name', read_only=True)
+    store_slug = serializers.CharField(source='developer_profile.slug', read_only=True)
     logo = serializers.ImageField(source='developer_profile.logo', read_only=True)
     
     class Meta:
         model = get_user_model()
-        fields = ['id', 'username', 'store_name', 'logo']
+        fields = ['id', 'username', 'store_name', 'store_slug', 'logo']
 
 class PublicListingSerializer(serializers.ModelSerializer):
     authors = PublicAuthorSerializer(many=True, read_only=True)
