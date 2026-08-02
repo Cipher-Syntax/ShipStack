@@ -21,6 +21,25 @@ class RegisterView(APIView):
             return Response({"message": "Registration successful. Please verify your email."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class ResendOTPView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email')
+        if not email:
+            return Response({"error": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user = User.objects.get(email=email)
+            if user.is_active:
+                return Response({"error": "Account is already verified."}, status=status.HTTP_400_BAD_REQUEST)
+            otp = OTPService.generate_otp(email)
+            EmailService.send_otp(email, otp)
+            return Response({"message": "A new OTP has been sent."}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
 class VerifyEmailView(APIView):
     permission_classes = [AllowAny]
 

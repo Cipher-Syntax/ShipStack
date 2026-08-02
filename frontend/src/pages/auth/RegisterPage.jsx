@@ -71,7 +71,11 @@ const RegisterPage = () => {
                         to="/"
                         className="flex items-center gap-3 text-3xl font-display font-bold"
                     >
-                        <img src="/shipstack_logo.jpg" alt="ShipStack" className="w-12 h-12 rounded-lg object-cover shadow-md" />
+                        <img
+                            src="/shipstack_logo.jpg"
+                            alt="ShipStack"
+                            className="w-12 h-12 rounded-lg object-cover shadow-md"
+                        />
                         ShipStack
                     </Link>
                 </div>
@@ -97,7 +101,11 @@ const RegisterPage = () => {
                 <div className="w-full max-w-md space-y-8">
                     {/* Mobile Logo */}
                     <div className="flex lg:hidden items-center gap-2 text-2xl font-display font-bold text-accent-primary mb-8">
-                        <img src="/shipstack_logo.jpg" alt="ShipStack" className="w-8 h-8 rounded object-cover shadow-sm" />
+                        <img
+                            src="/shipstack_logo.jpg"
+                            alt="ShipStack"
+                            className="w-8 h-8 rounded object-cover shadow-sm"
+                        />
                         ShipStack
                     </div>
 

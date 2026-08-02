@@ -6,7 +6,7 @@ import { Button } from "../../components/ui/button";
 import { AlertCircle } from "lucide-react";
 
 const LoginPage = () => {
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ const LoginPage = () => {
         setError("");
         setLoading(true);
         try {
-            await login(email, password);
+            await login(username, password);
             navigate("/dashboard");
         } catch (err) {
             setError(
@@ -53,7 +53,11 @@ const LoginPage = () => {
                         to="/"
                         className="flex items-center gap-3 text-3xl font-display font-bold"
                     >
-                        <img src="/shipstack_logo.jpg" alt="ShipStack" className="w-12 h-12 rounded-lg object-cover shadow-md" />
+                        <img
+                            src="/shipstack_logo.jpg"
+                            alt="ShipStack"
+                            className="w-12 h-12 rounded-lg object-cover shadow-md"
+                        />
                         ShipStack
                     </Link>
                 </div>
@@ -79,7 +83,11 @@ const LoginPage = () => {
                 <div className="w-full max-w-md space-y-8">
                     {/* Mobile Logo */}
                     <div className="flex lg:hidden items-center gap-2 text-2xl font-display font-bold text-accent-primary mb-8">
-                        <img src="/shipstack_logo.jpg" alt="ShipStack" className="w-8 h-8 rounded object-cover shadow-sm" />
+                        <img
+                            src="/shipstack_logo.jpg"
+                            alt="ShipStack"
+                            className="w-8 h-8 rounded object-cover shadow-sm"
+                        />
                         ShipStack
                     </div>
 
@@ -88,7 +96,8 @@ const LoginPage = () => {
                             Sign In
                         </h2>
                         <p className="text-text-secondary text-sm">
-                            Enter your email and password to access your account
+                            Enter your username and password to access your
+                            account
                         </p>
                     </div>
 
@@ -106,14 +115,16 @@ const LoginPage = () => {
                         <div className="space-y-4">
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold text-text-primary">
-                                    Email address
+                                    Username
                                 </label>
                                 <Input
-                                    type="email"
+                                    type="text"
                                     required
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="name@example.com"
+                                    value={username}
+                                    onChange={(e) =>
+                                        setUsername(e.target.value)
+                                    }
+                                    placeholder="johndoe"
                                     className="h-12"
                                 />
                             </div>
