@@ -59,7 +59,11 @@ export const getTags = async () => {
     return response.data;
 };
 
-export const getPublicListings = async (page = 1) => {
-    const response = await api.get(`/api/listings/public/?page=${page}`);
+export const getPublicListings = async (page = 1, filters = {}) => {
+    let url = `/api/listings/public/?page=${page}`;
+    if (filters.author) {
+        url += `&author=${filters.author}`;
+    }
+    const response = await api.get(url);
     return response.data;
 };

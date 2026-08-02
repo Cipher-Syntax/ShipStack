@@ -18,7 +18,11 @@ class PublicListingListView(generics.ListAPIView):
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
-        return Listing.objects.filter(status=Listing.StatusChoices.PUBLISHED).order_by('-created_at')
+        queryset = Listing.objects.filter(status=Listing.StatusChoices.PUBLISHED).order_by('-created_at')
+        author_slug = self.request.query_params.get('author')
+        if author_slug:
+            queryset = queryset.filter(authors__developer_profile__slug=author_slug)
+        return queryset
 
 class ListingViewSet(viewsets.ModelViewSet):
     serializer_class = ListingSerializer
