@@ -43,11 +43,15 @@ class PublicListingSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
     cover_image_url = serializers.SerializerMethodField()
 
+    average_rating = serializers.FloatField(read_only=True)
+    total_reviews = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Listing
         fields = [
             'id', 'title', 'slug', 'short_description', 
-            'price', 'category', 'authors', 'cover_image_url'
+            'price', 'category', 'authors', 'cover_image_url',
+            'average_rating', 'total_reviews'
         ]
 
     def get_cover_image_url(self, obj):
@@ -74,11 +78,15 @@ class PublicListingDetailSerializer(serializers.ModelSerializer):
     is_owned = serializers.SerializerMethodField()
     releases = serializers.SerializerMethodField()
 
+    average_rating = serializers.FloatField(read_only=True)
+    total_reviews = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Listing
         fields = [
             'id', 'title', 'slug', 'short_description', 'full_description',
-            'price', 'category', 'authors', 'technologies', 'tags', 'media', 'created_at', 'is_owned', 'releases'
+            'price', 'category', 'authors', 'technologies', 'tags', 'media', 
+            'created_at', 'is_owned', 'releases', 'average_rating', 'total_reviews'
         ]
 
     def get_releases(self, obj):

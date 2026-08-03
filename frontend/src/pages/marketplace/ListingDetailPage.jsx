@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import { getPublicListing } from '../../services/listingService';
 import ReactMarkdown from 'react-markdown';
 import { ChevronRight, Package, ShieldCheck, Tag as TagIcon, Star, Code } from 'lucide-react';
+
+import { ReviewsSection } from '../../components/marketplace/ReviewsSection';
 import { Button } from '../../components/ui/button';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
@@ -17,7 +19,6 @@ const ListingDetailPage = () => {
     const { user } = useAuth();
     const { addToast } = useToast();
     const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
-    const [isDownloadLoading, setIsDownloadLoading] = useState(false);
     useEffect(() => {
         const fetchListing = async () => {
             try {
@@ -85,17 +86,15 @@ const ListingDetailPage = () => {
     };
 
     const handleDownload = async () => {
-        setIsDownloadLoading(true);
         try {
-            const data = await commerceService.getDownloadUrl(listing.id);
-            if (data.download_url) {
-                window.open(data.download_url, '_blank');
-            }
+            // First we get a short-lived download token from the authenticated API
+            // This ensures we always get a fresh auto-refreshed token via Axios!
+            const { token } = await commerceService.generateDownloadToken(listing.id);
+            // Then we use native browser navigation with the UUID token!
+            window.location.href = `http://localhost:8000/api/commerce/download/${listing.id}/?token=${token}`;
         } catch (err) {
             console.error(err);
-            addToast(err.response?.data?.error || "Failed to fetch download link. Please try again.", "error");
-        } finally {
-            setIsDownloadLoading(false);
+            addToast(err.response?.data?.error || "Failed to initiate download. Please login again.", "error");
         }
     };
 
@@ -209,9 +208,8 @@ const ListingDetailPage = () => {
                                             variant="primary" 
                                             className="w-full h-12 text-base font-bold shadow-sm mb-4"
                                             onClick={handleDownload}
-                                            disabled={isDownloadLoading}
                                         >
-                                            {isDownloadLoading ? 'Preparing...' : 'Download Source Code'}
+                                            Download Source Code
                                         </Button>
                                     </>
                                 ) : (
@@ -288,7 +286,9 @@ const ListingDetailPage = () => {
                                         {listing.releases.slice(0, 3).map(release => (
                                             <div key={release.id} className="border-b border-border-primary border-dashed last:border-0 pb-4 last:pb-0">
                                                 <div className="flex justify-between items-center mb-1">
-                                                    <span className="font-bold text-text-primary">v{release.version_number}</span>
+                                                    <span className="font-bold text-text-primary">
+                                                        {release.version_number.toLowerCase().startsWith('v') ? release.version_number : `v${release.version_number}`}
+                                                    </span>
                                                     <span className="text-xs text-text-tertiary">
                                                         {new Date(release.published_at).toLocaleDateString()}
                                                     </span>
@@ -311,6 +311,14 @@ const ListingDetailPage = () => {
                         </div>
                     </div>
                 </div>
+                
+                {/* Reviews Section */}
+                <ReviewsSection 
+                    listingId={listing.id} 
+                    isOwned={listing.is_owned} 
+                    averageRating={listing.average_rating}
+                    totalReviews={listing.total_reviews}
+                />
             </div>
         </div>
     );
