@@ -132,11 +132,22 @@ const BrowsePage = () => {
                             />
                         </div>
                         
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 flex-wrap sm:flex-nowrap w-full sm:w-auto">
+                            <select
+                                value={selectedCategory}
+                                onChange={(e) => { setSelectedCategory(e.target.value); setCurrentPage(1); }}
+                                className="block flex-1 sm:w-40 pl-3 pr-8 py-3 border border-border-primary rounded-lg text-sm bg-surface-primary text-text-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
+                            >
+                                <option value="">All Categories</option>
+                                {categories.map(category => (
+                                    <option key={category.id} value={category.slug}>{category.name}</option>
+                                ))}
+                            </select>
+
                             <select 
                                 value={ordering}
                                 onChange={(e) => { setOrdering(e.target.value); setCurrentPage(1); }}
-                                className="block w-40 pl-3 pr-8 py-3 border border-border-primary rounded-lg text-sm bg-surface-primary text-text-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
+                                className="block flex-1 sm:w-40 pl-3 pr-8 py-3 border border-border-primary rounded-lg text-sm bg-surface-primary text-text-primary focus:outline-none focus:ring-2 focus:ring-focus-ring"
                             >
                                 <option value="-created_at">Newest</option>
                                 <option value="price">Price: Low to High</option>
@@ -156,25 +167,6 @@ const BrowsePage = () => {
                                 )}
                             </button>
                         </div>
-                    </div>
-                    
-                    {/* Quick Category Filters */}
-                    <div className="mt-6 flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
-                        <button 
-                            onClick={() => handleCategoryClick("")}
-                            className={`whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${!selectedCategory ? 'bg-accent-primary text-white' : 'bg-surface-primary border border-border-primary text-text-secondary hover:bg-surface-hover'}`}
-                        >
-                            All
-                        </button>
-                        {categories.map(category => (
-                            <button 
-                                key={category.id} 
-                                onClick={() => handleCategoryClick(category.slug)}
-                                className={`whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === category.slug ? 'bg-accent-primary text-white' : 'bg-surface-primary border border-border-primary text-text-secondary hover:bg-surface-hover'}`}
-                            >
-                                {category.name}
-                            </button>
-                        ))}
                     </div>
                 </div>
             </div>
