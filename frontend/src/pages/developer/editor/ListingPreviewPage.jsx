@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getListing, submitListing } from '../../../services/listingService';
 import { useToast } from '../../../contexts/ToastContext';
 import { Button } from '../../../components/ui/Button';
-import { AlertCircle, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { AlertCircle, CheckCircle2, ChevronLeft, ChevronRight, Package } from 'lucide-react';
 
 export default function ListingPreviewPage() {
     const { id } = useParams();
@@ -149,9 +149,15 @@ export default function ListingPreviewPage() {
                 <Button variant="secondary" onClick={() => navigate(`/developer/listings/${id}/media`)}>
                     &larr; Back
                 </Button>
-                <Button onClick={handleSubmit} disabled={submitting} className="px-8 bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/20">
-                    {submitting ? 'Submitting...' : <span className="flex items-center gap-2"><CheckCircle2 size={18} /> Submit for Review</span>}
-                </Button>
+                {data.status === 'DRAFT' ? (
+                    <Button onClick={handleSubmit} disabled={submitting} className="px-8 bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/20">
+                        {submitting ? 'Submitting...' : <span className="flex items-center gap-2"><CheckCircle2 size={18} /> Submit for Review</span>}
+                    </Button>
+                ) : (
+                    <Button onClick={() => navigate(`/developer/listings/${id}/releases`)} className="px-8 bg-accent-primary hover:bg-accent-hover text-white shadow-lg shadow-accent-primary/20">
+                        <span className="flex items-center gap-2"><Package size={18} /> Manage Releases</span>
+                    </Button>
+                )}
             </div>
         </div>
     );

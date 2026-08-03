@@ -246,11 +246,19 @@ CACHES = {
 
 # Celery Configuration
 CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://127.0.0.1:6379/0')
+if CELERY_BROKER_URL.startswith('rediss://') and 'ssl_cert_reqs' not in CELERY_BROKER_URL:
+    CELERY_BROKER_URL += '?ssl_cert_reqs=CERT_NONE'
+
 CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND', default='redis://127.0.0.1:6379/0')
+if CELERY_RESULT_BACKEND.startswith('rediss://') and 'ssl_cert_reqs' not in CELERY_RESULT_BACKEND:
+    CELERY_RESULT_BACKEND += '?ssl_cert_reqs=CERT_NONE'
+    
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+CELERY_IGNORE_RESULT = True
 CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_ALWAYS_EAGER = config('CELERY_TASK_ALWAYS_EAGER', default=DEBUG, cast=bool)
 
 # Paymongo
 PAYMONGO_SECRET_KEY = config('PAYMONGO_SECRET_KEY', default='')

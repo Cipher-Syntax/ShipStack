@@ -278,13 +278,36 @@ const ListingDetailPage = () => {
                                 </div>
                             )}
 
-                            {/* Version History Placeholder */}
-                            <div className="bg-background-secondary border border-border-primary border-dashed rounded-2xl p-6 text-center">
-                                <h3 className="font-bold text-text-primary mb-2">Version History</h3>
-                                <p className="text-sm text-text-secondary">
-                                    Changelog and release notes coming soon.
-                                </p>
-                            </div>
+                            {/* Version History */}
+                            {listing.releases && listing.releases.length > 0 ? (
+                                <div className="bg-surface-primary border border-border-primary rounded-2xl p-6">
+                                    <h3 className="font-bold text-text-primary mb-4 flex items-center gap-2">
+                                        <Package size={18} /> Version History
+                                    </h3>
+                                    <div className="space-y-4">
+                                        {listing.releases.slice(0, 3).map(release => (
+                                            <div key={release.id} className="border-b border-border-primary border-dashed last:border-0 pb-4 last:pb-0">
+                                                <div className="flex justify-between items-center mb-1">
+                                                    <span className="font-bold text-text-primary">v{release.version_number}</span>
+                                                    <span className="text-xs text-text-tertiary">
+                                                        {new Date(release.published_at).toLocaleDateString()}
+                                                    </span>
+                                                </div>
+                                                <div className="text-sm text-text-secondary line-clamp-2 prose prose-sm dark:prose-invert">
+                                                    <ReactMarkdown>{release.changelog}</ReactMarkdown>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="bg-background-secondary border border-border-primary border-dashed rounded-2xl p-6 text-center">
+                                    <h3 className="font-bold text-text-primary mb-2">Version History</h3>
+                                    <p className="text-sm text-text-secondary">
+                                        No releases published yet.
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
