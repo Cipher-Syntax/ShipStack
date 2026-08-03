@@ -39,13 +39,13 @@ const HomePage = () => {
             <section className="relative overflow-hidden bg-background-secondary pt-24 pb-32">
                 <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#2563EB_1px,transparent_1px)] [background-size:20px_20px]"></div>
                 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-primary/10 text-accent-primary text-sm font-medium mb-8">
+                    {/* <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-primary/10 text-accent-primary text-sm font-medium mb-8">
                         <span className="relative flex h-2 w-2">
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-primary opacity-75"></span>
                           <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-primary"></span>
                         </span>
                         ShipStack v1.0 is Live
-                    </div>
+                    </div> */}
                     
                     <h1 className="text-5xl md:text-7xl font-display font-bold text-text-primary tracking-tight mb-8 leading-tight">
                         Production-Ready Software <br className="hidden md:block"/> 
