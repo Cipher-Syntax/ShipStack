@@ -116,7 +116,7 @@ export default function DeveloperReleasesPage() {
                                         <div className="flex items-center gap-3">
                                             <h3 className="text-lg font-bold text-text-primary flex items-center gap-2">
                                                 <Tag size={16} className="text-accent-primary" /> 
-                                                v{release.version_number}
+                                                {release.version_number.toLowerCase().startsWith('v') ? release.version_number : `v${release.version_number}`}
                                             </h3>
                                             {release.is_published ? (
                                                 <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-green-500/10 text-green-600 border border-green-500/20">
@@ -150,9 +150,9 @@ export default function DeveloperReleasesPage() {
                                             {release.package ? (
                                                 <span 
                                                     className="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-accent-primary/10 text-accent-primary text-xs font-semibold border border-accent-primary/20"
-                                                    title={packages.find(p => p.id === release.package)?.file.split('/').pop() || "Package Attached"}
+                                                    title={packages.find(p => p.id === release.package)?.file.split('/').pop().replace(/\.txt$/i, '.zip') || "Package Attached"}
                                                 >
-                                                    <Package size={12} /> {packages.find(p => p.id === release.package)?.file.split('/').pop() || "Package Attached"}
+                                                    <Package size={12} /> {packages.find(p => p.id === release.package)?.file.split('/').pop().replace(/\.txt$/i, '.zip') || "Package Attached"}
                                                 </span>
                                             ) : (
                                                 <span className="text-xs text-text-tertiary italic">None</span>
@@ -197,7 +197,7 @@ export default function DeveloperReleasesPage() {
                             <option value="">-- Select an uploaded package --</option>
                             {packages.map(p => (
                                 <option key={p.id} value={p.id}>
-                                    {p.file.split('/').pop()} ({p.scan_status})
+                                    {p.file.split('/').pop().replace(/\.txt$/i, '.zip')} ({p.scan_status})
                                 </option>
                             ))}
                         </select>

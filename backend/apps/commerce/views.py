@@ -170,13 +170,39 @@ class PaymongoWebhookView(APIView):
 
 from apps.listings.models import SoftwarePackage
 
-class DownloadSoftwareView(APIView):
+class GenerateDownloadTokenView(APIView):
     permission_classes = [IsAuthenticated]
-
-    def get(self, request, listing_id, *args, **kwargs):
+    
+    def post(self, request, listing_id, *args, **kwargs):
         # Verify ownership
         if not Purchase.objects.filter(buyer=request.user, listing_id=listing_id).exists():
             return Response({'error': 'You do not own this software.'}, status=status.HTTP_403_FORBIDDEN)
+            
+        import uuid
+        from django.core.cache import cache
+        
+        token = str(uuid.uuid4())
+        # Cache the token mapping to the listing_id for 60 seconds
+        cache.set(f'download_token_{token}', listing_id, timeout=60)
+        
+        return Response({'token': token})
+
+
+class DownloadSoftwareView(APIView):
+    # We remove global permission_classes to allow manual token validation via query param
+    permission_classes = []
+
+    def get(self, request, listing_id, *args, **kwargs):
+        # Support short-lived UUID token in query param for native browser downloads
+        token = request.query_params.get('token')
+        from django.core.cache import cache
+        
+        cached_listing_id = cache.get(f'download_token_{token}')
+        if not cached_listing_id or str(cached_listing_id) != str(listing_id):
+            return Response({'error': 'Invalid or expired download token.'}, status=status.HTTP_401_UNAUTHORIZED)
+            
+        # Consume the one-time token
+        cache.delete(f'download_token_{token}')
             
         from apps.releases.models import Release
         latest_release = Release.objects.filter(
@@ -198,4 +224,27 @@ class DownloadSoftwareView(APIView):
         if not package or not package.file:
             return Response({'error': 'No downloadable package available.'}, status=status.HTTP_404_NOT_FOUND)
             
-        return Response({'download_url': package.file.url})
+        import cloudinary.utils
+        import requests
+        from django.http import StreamingHttpResponse
+        
+        try:
+            # Generate the Cloudinary URL (it's stored as .txt)
+            url, _ = cloudinary.utils.cloudinary_url(
+                package.file.name,
+                resource_type='raw',
+                type=package.file.type if hasattr(package.file, 'type') else 'upload'
+            )
+            
+            # Proxy stream it back to the client so we can force the .zip filename
+            # This completely avoids browser CORS and timeout issues
+            r = requests.get(url, stream=True)
+            r.raise_for_status()
+            
+            response = StreamingHttpResponse(r.iter_content(chunk_size=8192), content_type='application/zip')
+            response['Content-Disposition'] = f'attachment; filename="{package.listing.slug}-package.zip"'
+            response['Content-Length'] = r.headers.get('content-length')
+            return response
+            
+        except Exception as e:
+            return Response({'error': 'Failed to fetch package file from storage.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

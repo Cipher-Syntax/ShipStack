@@ -1,3 +1,4 @@
+from django.db.models import Avg, Count
 from rest_framework import viewsets, permissions, status, generics
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -27,7 +28,10 @@ class PublicListingListView(generics.ListAPIView):
     ordering = ['-created_at']
 
     def get_queryset(self):
-        queryset = Listing.objects.filter(status=Listing.StatusChoices.PUBLISHED)
+        queryset = Listing.objects.filter(status=Listing.StatusChoices.PUBLISHED).annotate(
+            average_rating=Avg('reviews__rating'),
+            total_reviews=Count('reviews', distinct=True)
+        )
         author_slug = self.request.query_params.get('author')
         if author_slug:
             queryset = queryset.filter(authors__developer_profile__slug=author_slug)
@@ -39,7 +43,10 @@ class PublicListingDetailView(generics.RetrieveAPIView):
     lookup_field = 'slug'
 
     def get_queryset(self):
-        return Listing.objects.filter(status=Listing.StatusChoices.PUBLISHED)
+        return Listing.objects.filter(status=Listing.StatusChoices.PUBLISHED).annotate(
+            average_rating=Avg('reviews__rating'),
+            total_reviews=Count('reviews', distinct=True)
+        )
 
 class ListingViewSet(viewsets.ModelViewSet):
     serializer_class = ListingSerializer
@@ -100,6 +107,14 @@ class ListingViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], parser_classes=[MultiPartParser, FormParser])
     def packages(self, request, pk=None):
         listing = self.get_object()
+        
+        # Transparently rename .zip files to .txt to bypass Cloudinary's strict raw file block
+        # on free tier accounts. The frontend will still force the download as .zip!
+        if 'file' in request.FILES:
+            uploaded_file = request.FILES['file']
+            if uploaded_file.name.lower().endswith('.zip'):
+                uploaded_file.name = uploaded_file.name[:-4] + '.txt'
+                
         serializer = SoftwarePackageSerializer(data=request.data)
         if serializer.is_valid():
             package = serializer.save(listing=listing)

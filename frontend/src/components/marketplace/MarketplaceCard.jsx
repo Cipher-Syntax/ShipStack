@@ -31,7 +31,10 @@ const MarketplaceCard = ({ listing }) => {
                         )}
                         <div className="flex items-center gap-1 text-sm font-medium text-amber-500">
                             <Star className="w-3.5 h-3.5 fill-current" />
-                            <span>New</span>
+                            <span>
+                                {listing.average_rating ? Number(listing.average_rating).toFixed(1) : 'New'}
+                                {listing.total_reviews > 0 && <span className="text-text-tertiary font-normal ml-1">({listing.total_reviews})</span>}
+                            </span>
                         </div>
                     </div>
                     

@@ -7,8 +7,8 @@ export const commerceService = {
         });
         return response.data;
     },
-    getDownloadUrl: async (listingId) => {
-        const response = await api.get(`/api/commerce/download/${listingId}/`);
+    generateDownloadToken: async (listingId) => {
+        const response = await api.post(`/api/commerce/download-token/${listingId}/`);
         return response.data;
     }
 };
