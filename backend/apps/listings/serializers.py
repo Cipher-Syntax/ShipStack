@@ -63,6 +63,8 @@ from apps.marketplace.serializers import TechnologySerializer, TagSerializer
 
 from apps.commerce.models import Purchase
 
+from apps.releases.serializers import PublicReleaseSerializer
+
 class PublicListingDetailSerializer(serializers.ModelSerializer):
     authors = PublicAuthorSerializer(many=True, read_only=True)
     category = CategorySerializer(read_only=True)
@@ -70,13 +72,18 @@ class PublicListingDetailSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     media = ListingMediaSerializer(many=True, read_only=True)
     is_owned = serializers.SerializerMethodField()
+    releases = serializers.SerializerMethodField()
 
     class Meta:
         model = Listing
         fields = [
             'id', 'title', 'slug', 'short_description', 'full_description',
-            'price', 'category', 'authors', 'technologies', 'tags', 'media', 'created_at', 'is_owned'
+            'price', 'category', 'authors', 'technologies', 'tags', 'media', 'created_at', 'is_owned', 'releases'
         ]
+
+    def get_releases(self, obj):
+        releases = obj.releases.filter(is_published=True).order_by('-published_at')
+        return PublicReleaseSerializer(releases, many=True, context=self.context).data
 
     def get_is_owned(self, obj):
         request = self.context.get('request')

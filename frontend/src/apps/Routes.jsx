@@ -12,6 +12,7 @@ import StorefrontSettingsPage from "../pages/developer/StorefrontSettingsPage";
 import StorefrontPage from "../pages/storefront/StorefrontPage";
 import DashboardPage from "../pages/dashboard/DashboardPage";
 import MyListingsPage from "../pages/developer/MyListingsPage";
+import DeveloperReleasesPage from "../pages/developer/DeveloperReleasesPage";
 import EditorLayout from "../layouts/EditorLayout";
 import ListingBasicsPage from "../pages/developer/editor/ListingBasicsPage";
 import ListingDetailsPage from "../pages/developer/editor/ListingDetailsPage";
@@ -109,6 +110,14 @@ const AppRoutes = () => {
                 element={
                     <ProtectedRoute>
                         <MyListingsPage />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/developer/listings/:id/releases"
+                element={
+                    <ProtectedRoute>
+                        <DeveloperReleasesPage />
                     </ProtectedRoute>
                 }
             />

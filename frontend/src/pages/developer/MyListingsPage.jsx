@@ -152,6 +152,14 @@ export default function MyListingsPage() {
                                             </Button>
                                             <Button 
                                                 variant="secondary" 
+                                                className="h-9 px-3 shadow-sm hover:bg-surface-hover hover:border-accent-primary/30"
+                                                onClick={() => navigate(`/developer/listings/${l.id}/releases`)}
+                                                title="Manage Releases"
+                                            >
+                                                <Package size={14} />
+                                            </Button>
+                                            <Button 
+                                                variant="secondary" 
                                                 className="h-9 px-4 font-semibold text-sm shadow-sm hover:bg-surface-hover hover:border-accent-primary/30"
                                                 onClick={() => navigate(`/developer/listings/${l.id}/basics`)}
                                             >
