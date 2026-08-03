@@ -5,6 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import { ChevronRight, Package, ShieldCheck, Tag as TagIcon, Star, Code } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { useAuth } from '../../contexts/AuthContext';
+import { useToast } from '../../contexts/ToastContext';
 import { commerceService } from '../../services/commerceService';
 
 const ListingDetailPage = () => {
@@ -14,6 +15,7 @@ const ListingDetailPage = () => {
     const [error, setError] = useState(null);
     const [activeImage, setActiveImage] = useState(null);
     const { user } = useAuth();
+    const { addToast } = useToast();
     const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
 
     useEffect(() => {
@@ -76,7 +78,7 @@ const ListingDetailPage = () => {
             }
         } catch (err) {
             console.error(err);
-            alert(err.response?.data?.error || "Failed to initiate checkout. Please try again.");
+            addToast(err.response?.data?.error || "Failed to initiate checkout. Please try again.", "error");
         } finally {
             setIsCheckoutLoading(false);
         }
