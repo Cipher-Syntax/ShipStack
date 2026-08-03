@@ -61,16 +61,25 @@ class PublicListingSerializer(serializers.ModelSerializer):
 
 from apps.marketplace.serializers import TechnologySerializer, TagSerializer
 
+from apps.commerce.models import Purchase
+
 class PublicListingDetailSerializer(serializers.ModelSerializer):
     authors = PublicAuthorSerializer(many=True, read_only=True)
     category = CategorySerializer(read_only=True)
     technologies = TechnologySerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     media = ListingMediaSerializer(many=True, read_only=True)
+    is_owned = serializers.SerializerMethodField()
 
     class Meta:
         model = Listing
         fields = [
             'id', 'title', 'slug', 'short_description', 'full_description',
-            'price', 'category', 'authors', 'technologies', 'tags', 'media', 'created_at'
+            'price', 'category', 'authors', 'technologies', 'tags', 'media', 'created_at', 'is_owned'
         ]
+
+    def get_is_owned(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return Purchase.objects.filter(buyer=request.user, listing=obj).exists()
+        return False

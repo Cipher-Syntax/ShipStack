@@ -6,5 +6,9 @@ export const commerceService = {
             listing_id: listingId
         });
         return response.data;
+    },
+    getDownloadUrl: async (listingId) => {
+        const response = await api.get(`/api/commerce/download/${listingId}/`);
+        return response.data;
     }
 };

@@ -17,7 +17,7 @@ const ListingDetailPage = () => {
     const { user } = useAuth();
     const { addToast } = useToast();
     const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
-
+    const [isDownloadLoading, setIsDownloadLoading] = useState(false);
     useEffect(() => {
         const fetchListing = async () => {
             try {
@@ -81,6 +81,21 @@ const ListingDetailPage = () => {
             addToast(err.response?.data?.error || "Failed to initiate checkout. Please try again.", "error");
         } finally {
             setIsCheckoutLoading(false);
+        }
+    };
+
+    const handleDownload = async () => {
+        setIsDownloadLoading(true);
+        try {
+            const data = await commerceService.getDownloadUrl(listing.id);
+            if (data.download_url) {
+                window.open(data.download_url, '_blank');
+            }
+        } catch (err) {
+            console.error(err);
+            addToast(err.response?.data?.error || "Failed to fetch download link. Please try again.", "error");
+        } finally {
+            setIsDownloadLoading(false);
         }
     };
 
@@ -180,23 +195,44 @@ const ListingDetailPage = () => {
                     {/* Right Column: Sticky Sidebar */}
                     <div className="lg:col-span-1">
                         <div className="sticky top-[140px] space-y-6">
-                            {/* Purchase Card */}
+                            {/* Purchase / Download Card */}
                             <div className="bg-surface-primary border border-border-primary rounded-2xl p-6 shadow-sm">
-                                <div className="mb-6">
-                                    <div className="text-sm text-text-secondary mb-1">Standard License</div>
-                                    <div className="text-4xl font-display font-bold text-text-primary">
-                                        {formattedPrice}
-                                    </div>
-                                </div>
-                                
-                                <Button 
-                                    variant="primary" 
-                                    className="w-full h-12 text-base font-bold shadow-sm mb-4"
-                                    onClick={handleCheckout}
-                                    disabled={isCheckoutLoading}
-                                >
-                                    {isCheckoutLoading ? 'Processing...' : (user ? 'Buy Now' : 'Login to Purchase')}
-                                </Button>
+                                {listing.is_owned ? (
+                                    <>
+                                        <div className="mb-6">
+                                            <div className="text-sm text-text-secondary mb-1">Standard License</div>
+                                            <div className="text-2xl font-display font-bold text-success flex items-center gap-2">
+                                                <ShieldCheck className="w-6 h-6" /> Owned
+                                            </div>
+                                        </div>
+                                        <Button 
+                                            variant="primary" 
+                                            className="w-full h-12 text-base font-bold shadow-sm mb-4"
+                                            onClick={handleDownload}
+                                            disabled={isDownloadLoading}
+                                        >
+                                            {isDownloadLoading ? 'Preparing...' : 'Download Source Code'}
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className="mb-6">
+                                            <div className="text-sm text-text-secondary mb-1">Standard License</div>
+                                            <div className="text-4xl font-display font-bold text-text-primary">
+                                                {formattedPrice}
+                                            </div>
+                                        </div>
+                                        
+                                        <Button 
+                                            variant="primary" 
+                                            className="w-full h-12 text-base font-bold shadow-sm mb-4"
+                                            onClick={handleCheckout}
+                                            disabled={isCheckoutLoading}
+                                        >
+                                            {isCheckoutLoading ? 'Processing...' : (user ? 'Buy Now' : 'Login to Purchase')}
+                                        </Button>
+                                    </>
+                                )}
                                 
                                 <div className="space-y-3 text-sm text-text-secondary">
                                     <div className="flex items-start gap-3">
