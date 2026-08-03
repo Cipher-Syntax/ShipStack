@@ -167,3 +167,24 @@ class PaymongoWebhookView(APIView):
                 pass
                 
         return Response({'status': 'success'})
+
+from apps.listings.models import SoftwarePackage
+
+class DownloadSoftwareView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, listing_id, *args, **kwargs):
+        # Verify ownership
+        if not Purchase.objects.filter(buyer=request.user, listing_id=listing_id).exists():
+            return Response({'error': 'You do not own this software.'}, status=status.HTTP_403_FORBIDDEN)
+            
+        # Get the latest passed package
+        package = SoftwarePackage.objects.filter(
+            listing_id=listing_id, 
+            scan_status=SoftwarePackage.ScanStatusChoices.PASSED
+        ).order_by('-uploaded_at').first()
+        
+        if not package or not package.file:
+            return Response({'error': 'No downloadable package available.'}, status=status.HTTP_404_NOT_FOUND)
+            
+        return Response({'download_url': package.file.url})
