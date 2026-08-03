@@ -159,7 +159,7 @@ const BrowsePage = () => {
                     </div>
                     
                     {/* Quick Category Filters */}
-                    <div className="mt-6 flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                    <div className="mt-6 flex flex-wrap items-center gap-2">
                         <button 
                             onClick={() => handleCategoryClick("")}
                             className={`whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${!selectedCategory ? 'bg-accent-primary text-white' : 'bg-surface-primary border border-border-primary text-text-secondary hover:bg-surface-hover'}`}
