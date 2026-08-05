@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useNotifications } from '../../hooks/useNotifications';
 import { Bell, Check, ArrowLeft, Loader2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
@@ -7,6 +7,7 @@ import { Button } from '../../components/ui/button';
 
 const NotificationCenterPage = () => {
     const { notifications, loading, error, markAsRead, markAllAsRead } = useNotifications();
+    const navigate = useNavigate();
 
     if (loading) {
         return (
@@ -28,12 +29,13 @@ const NotificationCenterPage = () => {
     const unreadCount = notifications.filter(n => !n.is_read).length;
 
     return (
-        <div className="w-full p-6 md:p-8">
+        <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20 pt-8 px-6">
+            <Button variant="ghost" onClick={() => navigate('/dashboard')} className="mb-4 -ml-4 flex items-center gap-2 text-text-secondary">
+                <ArrowLeft size={16} /> Back to Dashboard
+            </Button>
+            
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-4">
-                    <Link to="/dashboard" className="p-2 -ml-2 text-text-secondary hover:text-text-primary rounded-full hover:bg-background-secondary transition-colors">
-                        <ArrowLeft size={24} />
-                    </Link>
                     <h1 className="text-3xl font-display font-bold text-text-primary flex items-center gap-3">
                         Notifications
                         {unreadCount > 0 && (

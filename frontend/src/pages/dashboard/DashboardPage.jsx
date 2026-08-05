@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { LayoutDashboard, Store, Package, LogOut, Code, User, ChevronRight, ChevronLeft, Sparkles, Menu, X, MessageSquare } from 'lucide-react';
+import { LayoutDashboard, Store, Package, LogOut, Code, User, ChevronRight, ChevronLeft, Sparkles, Menu, X, MessageSquare, ClipboardList } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { NotificationBell } from '../../components/NotificationBell';
 
@@ -65,6 +65,11 @@ const DashboardPage = () => {
                         <Link to="/messages" className="flex items-center gap-3 px-3 py-2.5 text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-lg font-medium text-sm transition-colors group" title="Messages">
                             <MessageSquare size={18} className="shrink-0 group-hover:text-accent-primary transition-colors" />
                             {isSidebarOpen && <span className="whitespace-nowrap">Messages</span>}
+                        </Link>
+                        
+                        <Link to="/requests" className="flex items-center gap-3 px-3 py-2.5 text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-lg font-medium text-sm transition-colors group" title="Requests">
+                            <ClipboardList size={18} className="shrink-0 group-hover:text-accent-primary transition-colors" />
+                            {isSidebarOpen && <span className="whitespace-nowrap">Requests</span>}
                         </Link>
                         
                         {user?.is_verified_developer ? (
