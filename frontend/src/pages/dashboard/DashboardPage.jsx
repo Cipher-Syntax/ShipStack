@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { LayoutDashboard, Store, Package, LogOut, Code, User, ChevronRight, ChevronLeft, Sparkles, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Store, Package, LogOut, Code, User, ChevronRight, ChevronLeft, Sparkles, Menu, X, MessageSquare } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 
 const DashboardPage = () => {
@@ -59,6 +59,11 @@ const DashboardPage = () => {
                             <div className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-accent-primary rounded-r-full"></div>
                             <LayoutDashboard size={18} className="shrink-0" />
                             {isSidebarOpen && <span className="whitespace-nowrap">Overview</span>}
+                        </Link>
+                        
+                        <Link to="/messages" className="flex items-center gap-3 px-3 py-2.5 text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-lg font-medium text-sm transition-colors group" title="Messages">
+                            <MessageSquare size={18} className="shrink-0 group-hover:text-accent-primary transition-colors" />
+                            {isSidebarOpen && <span className="whitespace-nowrap">Messages</span>}
                         </Link>
                         
                         {user?.is_verified_developer ? (

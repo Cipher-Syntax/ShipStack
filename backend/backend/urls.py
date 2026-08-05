@@ -28,6 +28,7 @@ urlpatterns = [
     path('api/commerce/', include('apps.commerce.urls')),
     path('api/releases/', include('apps.releases.urls')),
     path('api/reviews/', include('apps.reviews.urls')),
+    path('api/messaging/', include('apps.messaging.urls')),
 ]
 
 if settings.DEBUG:
