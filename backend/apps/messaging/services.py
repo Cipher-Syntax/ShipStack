@@ -33,4 +33,15 @@ def send_message(conversation, sender, content):
     )
     # Updating updated_at
     conversation.save(update_fields=['updated_at'])
+    
+    from apps.notifications.services import create_notification
+    recipient = conversation.participants.exclude(id=sender.id).first()
+    if recipient:
+        create_notification(
+            user=recipient,
+            title='New Message',
+            message=f"{sender.username} sent you a message.",
+            notification_type='MESSAGE',
+            link=f"/messages?conversation={conversation.id}"
+        )
     return message

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { LayoutDashboard, Store, Package, LogOut, Code, User, ChevronRight, ChevronLeft, Sparkles, Menu, X, MessageSquare } from 'lucide-react';
 import { Button } from '../../components/ui/button';
+import { NotificationBell } from '../../components/NotificationBell';
 
 const DashboardPage = () => {
     const { user, logout } = useAuth();
@@ -143,7 +144,20 @@ const DashboardPage = () => {
                             ShipStack
                         </Link>
                     </div>
-                    <Button variant="ghost" size="sm" onClick={logout}>Sign Out</Button>
+                    <div className="flex items-center gap-2">
+                        <NotificationBell />
+                        <Button variant="ghost" size="sm" onClick={logout}>Sign Out</Button>
+                    </div>
+                </header>
+
+                {/* Desktop Header */}
+                <header className="hidden md:flex h-16 border-b border-border-primary bg-background-primary items-center justify-end px-6 shrink-0">
+                    <div className="flex items-center gap-4">
+                        <NotificationBell />
+                        <div className="text-sm font-medium text-text-primary">
+                            {user?.username}
+                        </div>
+                    </div>
                 </header>
 
                 {/* Dashboard Content Container */}

@@ -50,4 +50,14 @@ class BuyerReviewViewSet(viewsets.ModelViewSet):
         if Review.objects.filter(user=self.request.user, listing_id=listing_id).exists():
             raise ValidationError({"non_field_errors": "You have already reviewed this listing."})
 
-        serializer.save(user=self.request.user)
+        review = serializer.save(user=self.request.user)
+
+        from apps.notifications.services import create_notification
+        for author in review.listing.authors.all():
+            create_notification(
+                user=author,
+                title='New Review',
+                message=f"{self.request.user.username} left a {review.rating}-star review on {review.listing.title}.",
+                notification_type='REVIEW',
+                link=f"/marketplace/{review.listing.slug}"
+            )
