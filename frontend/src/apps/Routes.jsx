@@ -13,6 +13,7 @@ import StorefrontPage from "../pages/storefront/StorefrontPage";
 import DashboardPage from "../pages/dashboard/DashboardPage";
 import MessagingPage from "../pages/dashboard/MessagingPage";
 import NotificationCenterPage from "../pages/dashboard/NotificationCenterPage";
+import MyPurchasesPage from "../pages/dashboard/MyPurchasesPage";
 import MyListingsPage from "../pages/developer/MyListingsPage";
 import DeveloperReleasesPage from "../pages/developer/DeveloperReleasesPage";
 import EditorLayout from "../layouts/EditorLayout";
@@ -163,6 +164,14 @@ const AppRoutes = () => {
                 element={
                     <ProtectedRoute>
                         <NotificationCenterPage />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/dashboard/purchases"
+                element={
+                    <ProtectedRoute>
+                        <MyPurchasesPage />
                     </ProtectedRoute>
                 }
             />

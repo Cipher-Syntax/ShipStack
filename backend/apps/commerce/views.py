@@ -12,6 +12,8 @@ import hashlib
 
 from .models import Order, Purchase
 from apps.listings.models import Listing
+from rest_framework import generics
+from .serializers import MyPurchaseSerializer
 
 class CreateCheckoutSessionView(APIView):
     permission_classes = [IsAuthenticated]
@@ -180,6 +182,13 @@ class PaymongoWebhookView(APIView):
         return Response({'status': 'success'})
 
 from apps.listings.models import SoftwarePackage
+
+class MyPurchasesView(generics.ListAPIView):
+    serializer_class = MyPurchaseSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Purchase.objects.filter(buyer=self.request.user).order_by('-purchased_at')
 
 class GenerateDownloadTokenView(APIView):
     permission_classes = [IsAuthenticated]

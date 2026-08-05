@@ -93,13 +93,10 @@ const DashboardPage = () => {
                         )}
 
                         <div className="pt-4 mt-4 border-t border-border-primary">
-                            <button disabled className="w-full flex items-center justify-between px-3 py-2.5 text-text-tertiary opacity-70 cursor-not-allowed rounded-lg font-medium text-sm" title="My Purchases">
-                                <div className="flex items-center gap-3">
-                                    <Package size={18} className="shrink-0" /> 
-                                    {isSidebarOpen && <span className="whitespace-nowrap">My Purchases</span>}
-                                </div>
-                                {isSidebarOpen && <span className="text-[10px] uppercase font-bold tracking-wider bg-border-primary px-1.5 py-0.5 rounded shrink-0">Soon</span>}
-                            </button>
+                            <Link to="/dashboard/purchases" className="flex items-center gap-3 px-3 py-2.5 text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-lg font-medium text-sm transition-colors group" title="My Purchases">
+                                <Package size={18} className="shrink-0 group-hover:text-accent-primary transition-colors" />
+                                {isSidebarOpen && <span className="whitespace-nowrap">My Purchases</span>}
+                            </Link>
                         </div>
                     </nav>
                 </div>
@@ -191,7 +188,10 @@ const DashboardPage = () => {
                                         <div className="inline-flex items-center gap-1.5 bg-gray-200 text-gray-700 px-2.5 py-1 rounded-full text-xs font-bold mb-2">
                                             Buyer Account
                                         </div>
-                                        <p className="text-sm text-text-secondary">Apply for developer verification to start selling your software.</p>
+                                        <p className="text-sm text-text-secondary mb-4">Apply for developer verification to start selling your software.</p>
+                                        <Link to="/dashboard/purchases" className="w-full flex items-center justify-center gap-2 py-2 bg-background-primary border border-border-primary hover:border-accent-primary hover:text-accent-primary text-text-primary rounded-lg text-sm font-bold transition-colors">
+                                            <Package size={16} /> View My Purchases
+                                        </Link>
                                     </div>
                                 )}
                             </div>
