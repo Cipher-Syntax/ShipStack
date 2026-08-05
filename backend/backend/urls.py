@@ -29,7 +29,8 @@ urlpatterns = [
     path('api/releases/', include('apps.releases.urls')),
     path('api/reviews/', include('apps.reviews.urls')),
     path('api/messaging/', include('apps.messaging.urls')),
-    path('api/', include('apps.notifications.urls')),
+    path('api/notifications/', include('apps.notifications.urls')),
+    path('api/requests/', include('apps.software_requests.urls')),
 ]
 
 if settings.DEBUG:
