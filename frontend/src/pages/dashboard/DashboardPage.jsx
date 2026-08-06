@@ -453,10 +453,6 @@ const DashboardPage = () => {
                                             {user?.is_verified_developer ? 'Verified' : 'Unverified'}
                                         </span>
                                     </div>
-                                    <div className="flex justify-between items-center text-text-secondary">
-                                        <span>Account Health</span>
-                                        <span className="font-bold text-emerald-600">Good</span>
-                                    </div>
                                 </div>
                             </div>
 
