@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TrendingUp, BarChart2, PieChart as PieIcon, DollarSign, Package } from 'lucide-react';
 
 // 1. Revenue Area Chart (Smooth SVG Gradient Line/Area Chart)
-export className RevenueAreaChart = ({ sales = [] }) => {
+export const RevenueAreaChart = ({ sales = [] }) => {
     const [hoveredPoint, setHoveredPoint] = useState(null);
 
     // Group sales by date (or mock timeline if single/few sales for beautiful visualization)
