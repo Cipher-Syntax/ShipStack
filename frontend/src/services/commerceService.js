@@ -10,5 +10,9 @@ export const commerceService = {
     generateDownloadToken: async (listingId) => {
         const response = await api.post(`/api/commerce/download-token/${listingId}/`);
         return response.data;
+    },
+    getMyPurchases: async () => {
+        const response = await api.get('/api/commerce/purchases/');
+        return response.data;
     }
 };

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getPublicListing } from '../../services/listingService';
 import ReactMarkdown from 'react-markdown';
-import { ChevronRight, Package, ShieldCheck, Tag as TagIcon, Star, Code, MessageSquare } from 'lucide-react';
+import { ChevronRight, Package, ShieldCheck, Tag as TagIcon, Star, Code, MessageSquare, ArrowLeft } from 'lucide-react';
 
 import { ReviewsSection } from '../../components/marketplace/ReviewsSection';
 import { Button } from '../../components/ui/button';
@@ -136,18 +136,16 @@ const ListingDetailPage = () => {
 
     return (
         <div className="min-h-screen bg-background-primary pb-24">
-            {/* Breadcrumbs */}
-            <div className="border-b border-border-primary bg-surface-primary">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center text-sm">
-                    <Link to="/" className="text-text-secondary hover:text-accent-primary transition-colors">Marketplace</Link>
-                    <ChevronRight size={14} className="mx-2 text-text-tertiary" />
-                    <span className="text-text-secondary">{listing.category?.name || 'Uncategorized'}</span>
-                    <ChevronRight size={14} className="mx-2 text-text-tertiary" />
-                    <span className="text-text-primary font-medium truncate max-w-[200px] sm:max-w-md">{listing.title}</span>
-                </div>
-            </div>
-
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                <button 
+                    onClick={() => navigate('/browse')} 
+                    className="mb-8 flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors group w-max"
+                >
+                    <div className="p-1.5 rounded-full bg-background-secondary group-hover:bg-border-primary transition-colors">
+                        <ArrowLeft size={16} />
+                    </div>
+                    Back to Marketplace
+                </button>
                 {/* Header */}
                 <div className="mb-8">
                     <h1 className="text-4xl sm:text-5xl font-display font-bold text-text-primary mb-4 leading-tight">
