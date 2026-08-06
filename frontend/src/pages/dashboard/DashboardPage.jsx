@@ -208,7 +208,6 @@ const DashboardPage = () => {
                         <NotificationBell />
                         <div className="h-4 w-px bg-border-primary"></div>
                         <div className="flex items-center gap-2 text-sm font-semibold text-text-primary bg-background-secondary px-3 py-1.5 rounded-full border border-border-primary">
-                            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                             {user?.username}
                         </div>
                     </div>
