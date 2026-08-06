@@ -191,7 +191,11 @@ class MyPurchasesView(generics.ListAPIView):
         return Purchase.objects.filter(buyer=self.request.user).order_by('-purchased_at')
 
 from .serializers import DeveloperSaleSerializer
-from apps.accounts.permissions import IsVerifiedDeveloper
+from rest_framework import permissions
+
+class IsVerifiedDeveloper(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return bool(request.user and request.user.is_authenticated and getattr(request.user, 'is_verified_developer', False))
 
 class DeveloperSalesView(generics.ListAPIView):
     serializer_class = DeveloperSaleSerializer
