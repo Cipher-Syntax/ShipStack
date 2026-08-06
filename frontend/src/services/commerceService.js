@@ -14,5 +14,9 @@ export const commerceService = {
     getMyPurchases: async () => {
         const response = await api.get('/api/commerce/purchases/');
         return response.data;
+    },
+    getDeveloperSales: async () => {
+        const response = await api.get('/api/commerce/sales/');
+        return response.data;
     }
 };

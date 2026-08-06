@@ -1,14 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { LayoutDashboard, Store, Package, LogOut, Code, User, ChevronRight, ChevronLeft, Sparkles, Menu, X, MessageSquare, ClipboardList } from 'lucide-react';
+import { LayoutDashboard, Store, Package, LogOut, Code, User, ChevronRight, ChevronLeft, Sparkles, Menu, X, MessageSquare, ClipboardList, DollarSign } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { NotificationBell } from '../../components/NotificationBell';
+import { commerceService } from '../../services/commerceService';
 
 const DashboardPage = () => {
     const { user, logout } = useAuth();
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [sales, setSales] = useState([]);
+
+    useEffect(() => {
+        if (user?.is_verified_developer) {
+            commerceService.getDeveloperSales()
+                .then(setSales)
+                .catch(console.error);
+        }
+    }, [user]);
+
+    const totalRevenue = sales.reduce((sum, sale) => sum + parseFloat(sale.purchase_price), 0);
 
     return (
         <div className="h-screen w-full bg-background-primary flex font-sans overflow-hidden">
@@ -81,6 +93,10 @@ const DashboardPage = () => {
                                 <Link to="/developer/listings" className="flex items-center gap-3 px-3 py-2.5 text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-lg font-medium text-sm transition-colors group" title="My Software">
                                     <Code size={18} className="shrink-0 group-hover:text-accent-primary transition-colors" />
                                     {isSidebarOpen && <span className="whitespace-nowrap">My Software</span>}
+                                </Link>
+                                <Link to="/developer/sales" className="flex items-center gap-3 px-3 py-2.5 text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-lg font-medium text-sm transition-colors group" title="My Sales">
+                                    <DollarSign size={18} className="shrink-0 group-hover:text-accent-primary transition-colors" />
+                                    {isSidebarOpen && <span className="whitespace-nowrap">My Sales</span>}
                                 </Link>
                             </>
                         ) : (
@@ -197,33 +213,59 @@ const DashboardPage = () => {
                             </div>
                         </div>
 
-                        {/* Storefront Card */}
-                        <div className="lg:col-span-2 bg-gradient-to-br from-accent-primary to-accent-hover p-8 rounded-2xl shadow-md text-white flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
-                            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
-                            <div className="relative z-10 space-y-3">
-                                <h2 className="text-3xl font-display font-bold">Build Your Storefront</h2>
-                                <p className="text-blue-50 max-w-lg leading-relaxed">
-                                    {user?.is_verified_developer 
-                                        ? "Design your storefront banner, upload your logo, and establish your professional brand on ShipStack."
-                                        : "Unlock the ability to create a professional storefront and sell your software by applying to become a verified developer."}
-                                </p>
+                        {/* Storefront / Metrics Card */}
+                        {user?.is_verified_developer ? (
+                            <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div className="bg-gradient-to-br from-accent-primary to-accent-hover p-8 rounded-2xl shadow-md text-white flex flex-col justify-between relative overflow-hidden">
+                                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+                                    <div className="relative z-10">
+                                        <div className="flex items-center gap-2 mb-2 text-blue-100">
+                                            <DollarSign size={20} /> <span className="font-semibold text-sm uppercase tracking-wider">Total Revenue</span>
+                                        </div>
+                                        <h2 className="text-4xl font-display font-bold">
+                                            {new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(totalRevenue)}
+                                        </h2>
+                                        <p className="mt-2 text-blue-50 text-sm">From {sales.length} total sales.</p>
+                                    </div>
+                                    <div className="relative z-10 mt-6 pt-6 border-t border-white/20 flex gap-4">
+                                        <Link to="/developer/sales" className="text-sm font-bold hover:text-blue-100 flex items-center gap-1">
+                                            View Sales <ChevronRight size={16} />
+                                        </Link>
+                                    </div>
+                                </div>
+                                <div className="bg-background-secondary p-8 rounded-2xl shadow-sm border border-border-primary flex flex-col justify-between">
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-2 text-text-secondary">
+                                            <Store size={20} /> <span className="font-semibold text-sm uppercase tracking-wider">Storefront</span>
+                                        </div>
+                                        <h2 className="text-2xl font-display font-bold text-text-primary">Brand Settings</h2>
+                                        <p className="mt-2 text-text-secondary text-sm">Manage your public developer profile and banner.</p>
+                                    </div>
+                                    <div className="mt-6 pt-6 border-t border-border-primary">
+                                        <Link to="/developer/storefront-settings" className="text-sm font-bold text-accent-primary hover:text-accent-hover flex items-center gap-1">
+                                            Manage Storefront <ChevronRight size={16} />
+                                        </Link>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="relative z-10 shrink-0 w-full md:w-auto">
-                                {user?.is_verified_developer ? (
-                                    <Link to="/developer/storefront-settings">
-                                        <Button className="w-full md:w-auto h-12 px-8 bg-white text-accent-primary hover:bg-blue-50 border-none shadow-xl hover:shadow-2xl transition-shadow font-bold text-lg">
-                                            Manage Storefront <ChevronRight size={20} className="ml-1"/>
-                                        </Button>
-                                    </Link>
-                                ) : (
+                        ) : (
+                            <div className="lg:col-span-2 bg-gradient-to-br from-accent-primary to-accent-hover p-8 rounded-2xl shadow-md text-white flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+                                <div className="relative z-10 space-y-3">
+                                    <h2 className="text-3xl font-display font-bold">Build Your Storefront</h2>
+                                    <p className="text-blue-50 max-w-lg leading-relaxed">
+                                        Unlock the ability to create a professional storefront and sell your software by applying to become a verified developer.
+                                    </p>
+                                </div>
+                                <div className="relative z-10 shrink-0 w-full md:w-auto">
                                     <Link to="/developer/apply">
                                         <Button className="w-full md:w-auto h-12 px-8 bg-white text-accent-primary hover:bg-blue-50 border-none shadow-xl hover:shadow-2xl transition-shadow font-bold text-lg">
                                             Apply Now <ChevronRight size={20} className="ml-1"/>
                                         </Button>
                                     </Link>
-                                )}
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
             </main>
