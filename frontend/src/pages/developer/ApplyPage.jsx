@@ -69,85 +69,78 @@ const ApplyPage = () => {
 
     const renderRightPanel = () => {
         if (application) {
-            let statusConfig =
-                {
-                    PENDING: {
-                        color: "bg-yellow-50 text-yellow-700 border-yellow-200",
-                        badge: "bg-yellow-100 text-yellow-800 border-yellow-300",
-                        icon: <Clock size={48} className="text-yellow-500 mb-4" />,
-                        title: "Application Pending",
-                        desc: "Your application is currently under review by our team. We will notify you once a decision is made.",
-                    },
-                    APPROVED: {
-                        color: "bg-green-50 text-green-700 border-green-200",
-                        badge: "bg-green-100 text-green-800 border-green-300",
-                        icon: <CheckCircle size={48} className="text-green-500 mb-4" />,
-                        title: "Application Approved",
-                        desc: "Congratulations! You are now a verified developer.",
-                    },
-                    REJECTED: {
-                        color: "bg-red-50 text-red-700 border-red-200",
-                        badge: "bg-red-100 text-red-800 border-red-300",
-                        icon: <AlertCircle size={48} className="text-red-500 mb-4" />,
-                        title: "Application Rejected",
-                        desc: "Unfortunately, your application was not approved at this time.",
-                    },
-                }[application.status] || {};
+            const isApproved = application.status === "APPROVED";
+            const isRejected = application.status === "REJECTED";
+            const isPending = application.status === "PENDING";
+
+            let statusConfig = {
+                PENDING: {
+                    color: "text-yellow-600",
+                    badge: "bg-yellow-100 text-yellow-800",
+                    icon: <Clock size={40} className="text-yellow-600 mb-4" />,
+                    title: "Application Pending",
+                    desc: "Your creator application is currently under review by our team. We'll notify you as soon as a decision is made.",
+                    actionText: "Return to Dashboard",
+                },
+                APPROVED: {
+                    color: "text-green-600",
+                    badge: "bg-green-100 text-green-800",
+                    icon: <CheckCircle size={40} className="text-green-600 mb-4" />,
+                    title: "Welcome to ShipStack",
+                    desc: "Congratulations! Your creator application has been approved. You now have full access to publish and monetize your software.",
+                    actionText: "Go to Creator Dashboard",
+                },
+                REJECTED: {
+                    color: "text-red-600",
+                    badge: "bg-red-100 text-red-800",
+                    icon: <AlertCircle size={40} className="text-red-600 mb-4" />,
+                    title: "Application Declined",
+                    desc: "Unfortunately, we are unable to approve your application at this time.",
+                    actionText: "Return to Dashboard",
+                },
+            }[application.status] || {};
 
             return (
-                <div className="max-w-md w-full mx-auto">
-                    <div className="lg:hidden mb-6">
+                <div className="max-w-md w-full mx-auto text-center">
+                    <div className="lg:hidden mb-8 text-left">
                         <Link to="/dashboard" className="inline-flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors font-medium">
                             <ChevronLeft size={20} /> Back
                         </Link>
                     </div>
 
-                    <div className={`w-full text-center rounded-2xl border ${statusConfig.color} shadow-none`}>
-                        <div className="p-8 pb-6">
-                            <div className="flex justify-center">
-                                {statusConfig.icon}
-                            </div>
-                            <h1 className="text-2xl md:text-3xl font-display font-bold mt-4">
-                                {statusConfig.title}
-                            </h1>
-                            <p className="text-md opacity-90 leading-relaxed mt-2">
-                                {statusConfig.desc}
-                            </p>
-                        </div>
+                    <div className="flex flex-col items-center">
+                        {statusConfig.icon}
+                        
+                        <h1 className="text-3xl font-display font-bold text-text-primary mb-3">
+                            {statusConfig.title}
+                        </h1>
+                        
+                        <p className="text-base text-text-secondary leading-relaxed mb-8">
+                            {statusConfig.desc}
+                        </p>
 
-                        {/* Ticket Perforation */}
-                        <div className="relative h-4 w-full flex items-center justify-between overflow-hidden -my-2 z-10">
-                            <div className="w-6 h-6 rounded-full bg-background-primary -ml-3 border border-current opacity-20"></div>
-                            <div className="w-full border-t-2 border-dashed border-current opacity-20 mx-2"></div>
-                            <div className="w-6 h-6 rounded-full bg-background-primary -mr-3 border border-current opacity-20"></div>
-                        </div>
-
-                        <div className="p-8 pt-6 bg-black/5 rounded-b-2xl text-left space-y-4">
+                        <div className="w-full space-y-4 border-y border-border-primary py-6 mb-8 text-left">
                             <div className="flex justify-between items-center">
-                                <span className="text-xs font-bold uppercase tracking-wider opacity-70">
-                                    Status
-                                </span>
-                                <span className={`px-3 py-1 rounded-full text-xs font-bold border ${statusConfig.badge}`}>
+                                <span className="text-sm font-medium text-text-secondary">Status</span>
+                                <span className={`px-3 py-1 rounded-md text-xs font-semibold ${statusConfig.badge}`}>
                                     {application.status}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="text-xs font-bold uppercase tracking-wider opacity-70">
-                                    Submitted On
-                                </span>
-                                <span className="text-sm font-semibold opacity-80">
-                                    {new Date(application.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
+                                <span className="text-sm font-medium text-text-secondary">Submitted On</span>
+                                <span className="text-sm font-medium text-text-primary">
+                                    {new Date(application.created_at).toLocaleDateString()}
                                 </span>
                             </div>
                         </div>
                     </div>
                     
-                    <div className="pt-6">
+                    <div>
                         <Button
                             onClick={() => navigate("/dashboard")}
-                            className="w-full h-12 text-lg font-bold shadow-none bg-background-secondary text-text-primary hover:bg-border-primary border border-border-primary"
+                            className="w-full h-12 text-base font-bold shadow-none bg-text-primary text-background-primary hover:opacity-90"
                         >
-                            Return to Dashboard
+                            {statusConfig.actionText}
                         </Button>
                     </div>
                 </div>
@@ -240,13 +233,13 @@ const ApplyPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex font-sans bg-background-primary">
+        <div className="h-screen w-full flex font-sans bg-background-primary overflow-hidden">
             {/* Left Side: Information & Branding (Fixed Heights to Prevent Scroll) */}
-            <div className="hidden lg:flex w-5/12 bg-gradient-to-br from-accent-primary to-accent-hover text-white flex-col justify-between p-10 relative overflow-hidden">
+            <div className="hidden lg:flex w-5/12 h-full bg-gradient-to-br from-accent-primary to-accent-hover text-white flex-col justify-between p-10 relative overflow-hidden">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
                 
                 <div className="relative z-10">
-                    <Link to="/dashboard" className="inline-flex items-center gap-2 text-blue-100 hover:text-white transition-colors mb-8 font-medium">
+                    <Link to="/dashboard" className="inline-flex items-center gap-2 text-blue-100 hover:text-white transition-colors mb-6 font-medium">
                         <ChevronLeft size={20} /> Back to Dashboard
                     </Link>
                     
@@ -258,7 +251,7 @@ const ApplyPage = () => {
                     </p>
                 </div>
 
-                <div className="relative z-10 space-y-6 mt-8">
+                <div className="relative z-10 space-y-6 mt-6">
                     <div className="flex items-start gap-4">
                         <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm border border-white/30">
                             <Rocket size={20} className="text-white" />
@@ -288,13 +281,13 @@ const ApplyPage = () => {
                     </div>
                 </div>
 
-                <div className="relative z-10 mt-8 pt-6 border-t border-white/20 text-sm text-blue-200">
+                <div className="relative z-10 mt-6 pt-6 border-t border-white/20 text-sm text-blue-200">
                     &copy; 2026 ShipStack. Curated Software Marketplace.
                 </div>
             </div>
 
             {/* Right Side: Dynamic Content */}
-            <div className="w-full lg:w-7/12 flex flex-col justify-center px-8 sm:px-16 md:px-24 py-12 overflow-y-auto">
+            <div className="w-full lg:w-7/12 h-full flex flex-col justify-center px-8 sm:px-16 md:px-24 py-8 overflow-y-auto">
                 {renderRightPanel()}
             </div>
         </div>
