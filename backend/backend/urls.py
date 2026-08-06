@@ -31,6 +31,8 @@ urlpatterns = [
     path('api/messaging/', include('apps.messaging.urls')),
     path('api/notifications/', include('apps.notifications.urls')),
     path('api/requests/', include('apps.software_requests.urls')),
+    path('api/admin/', include('apps.platform_admin.urls')),
+    path('api/audit/', include('apps.platform_audit.urls')),
 ]
 
 if settings.DEBUG:

@@ -32,6 +32,13 @@ import CheckoutCanceledPage from "../pages/marketplace/CheckoutCanceledPage";
 import RequestsBrowsePage from "../pages/requests/RequestsBrowsePage";
 import CreateRequestPage from "../pages/requests/CreateRequestPage";
 import RequestDetailPage from "../pages/requests/RequestDetailPage";
+import AdminRoute from "../components/AdminRoute";
+import AdminLayout from "../layouts/AdminLayout";
+import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
+import AdminUsersPage from "../pages/admin/AdminUsersPage";
+import AdminVerificationsPage from "../pages/admin/AdminVerificationsPage";
+import AdminListingsPage from "../pages/admin/AdminListingsPage";
+import AdminAuditLogsPage from "../pages/admin/AdminAuditLogsPage";
 
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated, isLoading } = useAuth();
@@ -195,6 +202,17 @@ const AppRoutes = () => {
                 }
             />
             <Route path="/requests/:id" element={<RequestDetailPage />} />
+            
+            <Route path="/admin" element={<AdminRoute />}>
+                <Route element={<AdminLayout />}>
+                    <Route index element={<AdminDashboardPage />} />
+                    <Route path="users" element={<AdminUsersPage />} />
+                    <Route path="verifications" element={<AdminVerificationsPage />} />
+                    <Route path="listings" element={<AdminListingsPage />} />
+                    <Route path="audit" element={<AdminAuditLogsPage />} />
+                </Route>
+            </Route>
+
 
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

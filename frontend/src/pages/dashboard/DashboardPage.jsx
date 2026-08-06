@@ -94,17 +94,17 @@ const DashboardPage = () => {
                     
                     {/* Navigation */}
                     <nav className="px-3 py-2 space-y-1">
-                        <Link to="/dashboard" className="flex items-center gap-3 px-3 py-2.5 bg-accent-primary/10 text-accent-primary font-bold text-sm rounded-xl transition-all group" title="Overview">
+                        <Link to="/dashboard" className="flex items-center gap-3 px-4 py-2.5 border-l-[3px] border-accent-primary text-accent-primary font-bold text-sm transition-all group" title="Overview">
                             <LayoutDashboard size={18} className="shrink-0" />
                             {isSidebarOpen && <span className="whitespace-nowrap">Overview</span>}
                         </Link>
                         
-                        <Link to="/messages" className="flex items-center gap-3 px-3 py-2.5 text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-xl font-medium text-sm transition-colors group" title="Messages">
+                        <Link to="/messages" className="flex items-center gap-3 px-4 py-2.5 border-l-[3px] border-transparent text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-xl font-medium text-sm transition-colors group" title="Messages">
                             <MessageSquare size={18} className="shrink-0 group-hover:text-accent-primary transition-colors" />
                             {isSidebarOpen && <span className="whitespace-nowrap">Messages</span>}
                         </Link>
                         
-                        <Link to="/requests" className="flex items-center gap-3 px-3 py-2.5 text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-lg font-medium text-sm transition-colors group" title="Requests">
+                        <Link to="/requests" className="flex items-center gap-3 px-4 py-2.5 border-l-[3px] border-transparent text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-xl font-medium text-sm transition-colors group" title="Requests">
                             <ClipboardList size={18} className="shrink-0 group-hover:text-accent-primary transition-colors" />
                             {isSidebarOpen && <span className="whitespace-nowrap">Requests</span>}
                         </Link>
@@ -114,21 +114,21 @@ const DashboardPage = () => {
                                 <div className="pt-3 pb-1 px-3">
                                     {isSidebarOpen && <p className="text-[11px] font-bold text-text-tertiary uppercase tracking-wider">Creator Hub</p>}
                                 </div>
-                                <Link to="/developer/listings" className="flex items-center gap-3 px-3 py-2.5 text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-xl font-medium text-sm transition-colors group" title="My Software">
+                                <Link to="/developer/listings" className="flex items-center gap-3 px-4 py-2.5 border-l-[3px] border-transparent text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-xl font-medium text-sm transition-colors group" title="My Software">
                                     <Code size={18} className="shrink-0 group-hover:text-accent-primary transition-colors" />
                                     {isSidebarOpen && <span className="whitespace-nowrap">My Software</span>}
                                 </Link>
-                                <Link to="/developer/sales" className="flex items-center gap-3 px-3 py-2.5 text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-xl font-medium text-sm transition-colors group" title="My Sales">
+                                <Link to="/developer/sales" className="flex items-center gap-3 px-4 py-2.5 border-l-[3px] border-transparent text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-xl font-medium text-sm transition-colors group" title="My Sales">
                                     <DollarSign size={18} className="shrink-0 group-hover:text-accent-primary transition-colors" />
                                     {isSidebarOpen && <span className="whitespace-nowrap">Sales & Revenue</span>}
                                 </Link>
-                                <Link to="/developer/storefront-settings" className="flex items-center gap-3 px-3 py-2.5 text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-xl font-medium text-sm transition-colors group" title="Storefront">
+                                <Link to="/developer/storefront-settings" className="flex items-center gap-3 px-4 py-2.5 border-l-[3px] border-transparent text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-xl font-medium text-sm transition-colors group" title="Storefront">
                                     <Store size={18} className="shrink-0 group-hover:text-accent-primary transition-colors" />
                                     {isSidebarOpen && <span className="whitespace-nowrap">Storefront</span>}
                                 </Link>
                             </>
                         ) : (
-                            <Link to="/developer/apply" className="flex items-center justify-between px-3 py-2.5 text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-xl font-medium text-sm transition-colors group" title="Become a Creator">
+                            <Link to="/developer/apply" className="flex items-center justify-between px-4 py-2.5 border-l-[3px] border-transparent text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-xl font-medium text-sm transition-colors group" title="Become a Creator">
                                 <div className="flex items-center gap-3">
                                     <Sparkles size={18} className="shrink-0 text-amber-500 group-hover:scale-110 transition-transform" /> 
                                     {isSidebarOpen && <span className="whitespace-nowrap font-medium">Become a Creator</span>}
@@ -138,11 +138,21 @@ const DashboardPage = () => {
 
                         <div className="pt-4 mt-4 border-t border-border-primary">
                             {isSidebarOpen && <p className="text-[11px] font-bold text-text-tertiary uppercase tracking-wider px-3 pb-1">Buyer Hub</p>}
-                            <Link to="/dashboard/purchases" className="flex items-center gap-3 px-3 py-2.5 text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-xl font-medium text-sm transition-colors group" title="My Purchases">
+                            <Link to="/dashboard/purchases" className="flex items-center gap-3 px-4 py-2.5 border-l-[3px] border-transparent text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-xl font-medium text-sm transition-colors group" title="My Purchases">
                                 <Package size={18} className="shrink-0 group-hover:text-accent-primary transition-colors" />
                                 {isSidebarOpen && <span className="whitespace-nowrap">My Purchases</span>}
                             </Link>
                         </div>
+
+                        {(user?.is_staff || user?.is_superuser) && (
+                            <div className="pt-4 mt-4 border-t border-border-primary">
+                                {isSidebarOpen && <p className="text-[11px] font-bold text-text-tertiary uppercase tracking-wider px-3 pb-1">Admin</p>}
+                                <Link to="/admin" className="flex items-center gap-3 px-4 py-2.5 border-l-[3px] border-transparent text-text-secondary hover:bg-background-primary hover:text-text-primary rounded-xl font-medium text-sm transition-colors group" title="Admin Panel">
+                                    <ShieldCheck size={18} className="shrink-0 group-hover:text-accent-primary transition-colors" />
+                                    {isSidebarOpen && <span className="whitespace-nowrap">Admin Panel</span>}
+                                </Link>
+                            </div>
+                        )}
                     </nav>
                 </div>
                 
@@ -471,6 +481,12 @@ const DashboardPage = () => {
                                     {user?.is_verified_developer && (
                                         <Link to="/developer/sales" className="flex items-center justify-between p-2.5 rounded-xl hover:bg-background-primary text-text-primary transition-colors">
                                             <span>Sales & Revenue Analytics</span>
+                                            <ChevronRight size={16} className="text-text-tertiary" />
+                                        </Link>
+                                    )}
+                                    {(user?.is_staff || user?.is_superuser) && (
+                                        <Link to="/admin" className="flex items-center justify-between p-2.5 rounded-xl hover:bg-background-primary text-text-primary transition-colors">
+                                            <span>Go to Admin Panel</span>
                                             <ChevronRight size={16} className="text-text-tertiary" />
                                         </Link>
                                     )}
