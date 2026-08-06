@@ -111,7 +111,7 @@ const DeveloperSalesPage = () => {
 
                 <div className="flex items-center gap-3">
                     <Link to="/developer/listings">
-                        <Button variant="outline" className="rounded-xl border-border-primary font-bold text-sm">
+                        <Button className="bg-accent-primary hover:bg-accent-hover text-white shadow-sm rounded-xl font-bold text-sm px-4 py-2.5">
                             Manage Software
                         </Button>
                     </Link>
