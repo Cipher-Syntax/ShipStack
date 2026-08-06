@@ -12,7 +12,8 @@ class PurchaseListingSerializer(serializers.ModelSerializer):
     def get_cover_image(self, obj):
         cover = obj.media.filter(media_type='COVER').first()
         if cover and cover.file:
-            return cover.file.url
+            from apps.common.utils import optimize_image_url
+            return optimize_image_url(cover.file.url)
         return None
 
 class MyPurchaseSerializer(serializers.ModelSerializer):

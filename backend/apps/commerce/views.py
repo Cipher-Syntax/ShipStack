@@ -183,12 +183,15 @@ class PaymongoWebhookView(APIView):
 
 from apps.listings.models import SoftwarePackage
 
+from apps.common.pagination import StandardResultsSetPagination
+
 class MyPurchasesView(generics.ListAPIView):
     serializer_class = MyPurchaseSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
-        return Purchase.objects.filter(buyer=self.request.user).order_by('-purchased_at')
+        return Purchase.objects.filter(buyer=self.request.user).select_related('listing').prefetch_related('listing__media').order_by('-purchased_at')
 
 from .serializers import DeveloperSaleSerializer
 from rest_framework import permissions
@@ -200,9 +203,10 @@ class IsVerifiedDeveloper(permissions.BasePermission):
 class DeveloperSalesView(generics.ListAPIView):
     serializer_class = DeveloperSaleSerializer
     permission_classes = [IsAuthenticated, IsVerifiedDeveloper]
+    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
-        return Purchase.objects.filter(listing__authors=self.request.user).order_by('-purchased_at')
+        return Purchase.objects.filter(listing__authors=self.request.user).select_related('listing', 'buyer').prefetch_related('listing__media').order_by('-purchased_at')
 
 class GenerateDownloadTokenView(APIView):
     permission_classes = [IsAuthenticated]

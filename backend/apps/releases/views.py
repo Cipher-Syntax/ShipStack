@@ -12,7 +12,7 @@ class DeveloperReleaseViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         # Only return releases for listings the user authors
-        return Release.objects.filter(listing__authors=self.request.user)
+        return Release.objects.filter(listing__authors=self.request.user).select_related('listing', 'package')
 
     @action(detail=True, methods=['post'])
     def publish(self, request, pk=None):

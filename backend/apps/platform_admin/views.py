@@ -7,12 +7,7 @@ from apps.listings.models import Listing
 from .serializers import AdminUserSerializer, AdminVerificationSerializer, AdminListingSerializer
 from .services import ban_user, unban_user, change_user_role, approve_listing, reject_listing, approve_verification, reject_verification, get_dashboard_metrics
 
-from rest_framework.pagination import PageNumberPagination
-
-class AdminPagination(PageNumberPagination):
-    page_size = 10
-    page_size_query_param = 'page_size'
-    max_page_size = 100
+from apps.common.pagination import AdminPagination
 
 class AdminUserViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = AdminPagination

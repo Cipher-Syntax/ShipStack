@@ -1,11 +1,18 @@
 from rest_framework import serializers
 from .models import Listing, ListingMedia, SoftwarePackage
+from apps.common.utils import optimize_image_url
 
 class ListingMediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = ListingMedia
         fields = ['id', 'file', 'media_type', 'order', 'created_at']
         read_only_fields = ['created_at']
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        if ret.get('file'):
+            ret['file'] = optimize_image_url(ret['file'])
+        return ret
 
 class SoftwarePackageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,6 +45,12 @@ class PublicAuthorSerializer(serializers.ModelSerializer):
         model = get_user_model()
         fields = ['id', 'username', 'store_name', 'store_slug', 'logo']
 
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        if ret.get('logo'):
+            ret['logo'] = optimize_image_url(ret['logo'])
+        return ret
+
 class PublicListingSerializer(serializers.ModelSerializer):
     authors = PublicAuthorSerializer(many=True, read_only=True)
     category = CategorySerializer(read_only=True)
@@ -58,9 +71,10 @@ class PublicListingSerializer(serializers.ModelSerializer):
         cover = obj.media.filter(media_type=ListingMedia.MediaTypeChoices.COVER).first()
         if cover and cover.file:
             request = self.context.get('request')
+            url = cover.file.url
             if request:
-                return request.build_absolute_uri(cover.file.url)
-            return cover.file.url
+                url = request.build_absolute_uri(url)
+            return optimize_image_url(url)
         return None
 
 from apps.marketplace.serializers import TechnologySerializer, TagSerializer

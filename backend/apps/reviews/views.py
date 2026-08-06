@@ -5,15 +5,17 @@ from .models import Review
 from .serializers import ReviewSerializer
 from apps.listings.models import Listing
 from apps.commerce.models import Purchase
+from apps.common.pagination import StandardResultsSetPagination
 
 class PublicReviewListView(generics.ListAPIView):
     """Read-only view to fetch paginated reviews for a listing."""
     serializer_class = ReviewSerializer
     permission_classes = [permissions.AllowAny]
+    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         listing_id = self.kwargs.get('listing_id')
-        queryset = Review.objects.filter(listing_id=listing_id)
+        queryset = Review.objects.filter(listing_id=listing_id).select_related('user')
         
         rating = self.request.query_params.get('rating')
         if rating:
