@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getPublicListing } from '../../services/listingService';
 import ReactMarkdown from 'react-markdown';
-import { ChevronRight, Package, ShieldCheck, Tag as TagIcon, Star, Code } from 'lucide-react';
+import { ChevronRight, Package, ShieldCheck, Tag as TagIcon, Star, Code, MessageSquare } from 'lucide-react';
 
 import { ReviewsSection } from '../../components/marketplace/ReviewsSection';
 import { Button } from '../../components/ui/button';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { commerceService } from '../../services/commerceService';
+import { useMessaging } from '../../hooks/useMessaging';
+import { useNavigate } from 'react-router-dom';
 
 const ListingDetailPage = () => {
     const { slug } = useParams();
@@ -19,6 +21,10 @@ const ListingDetailPage = () => {
     const { user } = useAuth();
     const { addToast } = useToast();
     const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+    const { startConversation } = useMessaging();
+    const navigate = useNavigate();
+    const [isMessagingLoading, setIsMessagingLoading] = useState(false);
+
     useEffect(() => {
         const fetchListing = async () => {
             try {
@@ -95,6 +101,24 @@ const ListingDetailPage = () => {
         } catch (err) {
             console.error(err);
             addToast(err.response?.data?.error || "Failed to initiate download. Please login again.", "error");
+        }
+    };
+
+    const handleMessageDeveloper = async () => {
+        if (!user) {
+            window.location.href = `/login?redirect=/listings/${slug}`;
+            return;
+        }
+        
+        setIsMessagingLoading(true);
+        try {
+            const conversation = await startConversation(author.username);
+            navigate(`/messages?conversation=${conversation.id}`);
+        } catch (err) {
+            console.error(err);
+            addToast("Failed to initiate conversation.", "error");
+        } finally {
+            setIsMessagingLoading(false);
         }
     };
 
@@ -243,6 +267,26 @@ const ListingDetailPage = () => {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Contact Developer */}
+                            {user?.username !== author?.username && (
+                                <div className="bg-surface-primary border border-border-primary rounded-2xl p-6 shadow-sm">
+                                    <h3 className="font-bold text-text-primary mb-4 flex items-center gap-2">
+                                        <MessageSquare size={18} /> Have Questions?
+                                    </h3>
+                                    <p className="text-sm text-text-secondary mb-4">
+                                        Contact the developer for pre-sales or support inquiries.
+                                    </p>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full"
+                                        onClick={handleMessageDeveloper}
+                                        disabled={isMessagingLoading}
+                                    >
+                                        {isMessagingLoading ? 'Connecting...' : 'Message Developer'}
+                                    </Button>
+                                </div>
+                            )}
 
                             {/* Tech Stack */}
                             {listing.technologies?.length > 0 && (

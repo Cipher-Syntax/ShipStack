@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
     Code,
     Hash,
@@ -9,11 +9,15 @@ import {
     Package,
     Star,
     Clock,
+    MessageSquare
 } from "lucide-react";
 import api from "../../utils/api";
 import { getPublicListings } from "../../services/listingService";
 import MarketplaceCard from "../../components/marketplace/MarketplaceCard";
 import { Pagination } from "../../components/ui/pagination";
+import { useMessaging } from "../../hooks/useMessaging";
+import { useAuth } from "../../contexts/AuthContext";
+import { Button } from "../../components/ui/button";
 
 const StorefrontPage = () => {
     const { slug } = useParams();
@@ -24,6 +28,11 @@ const StorefrontPage = () => {
     const [error, setError] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    
+    const { user } = useAuth();
+    const { startConversation } = useMessaging();
+    const navigate = useNavigate();
+    const [isMessagingLoading, setIsMessagingLoading] = useState(false);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -62,6 +71,23 @@ const StorefrontPage = () => {
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
         window.scrollTo({ top: 300, behavior: 'smooth' });
+    };
+
+    const handleMessageDeveloper = async () => {
+        if (!user) {
+            window.location.href = `/login?redirect=/store/${slug}`;
+            return;
+        }
+        
+        setIsMessagingLoading(true);
+        try {
+            const conversation = await startConversation(profile.username);
+            navigate(`/messages?conversation=${conversation.id}`);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsMessagingLoading(false);
+        }
     };
 
     if (loading)
@@ -180,6 +206,20 @@ const StorefrontPage = () => {
                                 </a>
                             )}
                         </div>
+                        
+                        {user?.username !== profile.username && (
+                            <div className="pt-2">
+                                 <Button
+                                      variant="outline"
+                                      onClick={handleMessageDeveloper}
+                                      disabled={isMessagingLoading}
+                                      className="flex items-center gap-2"
+                                  >
+                                      <MessageSquare size={16} />
+                                      {isMessagingLoading ? 'Connecting...' : 'Contact Developer'}
+                                  </Button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

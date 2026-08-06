@@ -11,6 +11,7 @@ import ApplyPage from "../pages/developer/ApplyPage";
 import StorefrontSettingsPage from "../pages/developer/StorefrontSettingsPage";
 import StorefrontPage from "../pages/storefront/StorefrontPage";
 import DashboardPage from "../pages/dashboard/DashboardPage";
+import MessagingPage from "../pages/dashboard/MessagingPage";
 import MyListingsPage from "../pages/developer/MyListingsPage";
 import DeveloperReleasesPage from "../pages/developer/DeveloperReleasesPage";
 import EditorLayout from "../layouts/EditorLayout";
@@ -140,6 +141,14 @@ const AppRoutes = () => {
                 element={
                     <ProtectedRoute>
                         <DashboardPage />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/messages"
+                element={
+                    <ProtectedRoute>
+                        <MessagingPage />
                     </ProtectedRoute>
                 }
             />
