@@ -224,73 +224,279 @@ const DashboardPage = () => {
                 </header>
 
                 {/* Dashboard Content Container */}
-                <div className="p-6 md:p-10 w-full max-w-5xl mx-auto space-y-8 animate-in fade-in duration-300">
+                <div className="p-6 md:p-8 w-full max-w-7xl mx-auto space-y-8 animate-in fade-in duration-300">
                     
-                    {/* Welcome Section */}
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-border-primary">
-                        <div className="space-y-2">
-                            <h1 className="text-3xl font-display font-bold text-text-primary tracking-tight">
-                                Welcome, {user?.username}
-                            </h1>
-                            <p className="text-text-secondary text-base">
-                                {user?.is_verified_developer 
-                                    ? "Here's an overview of your marketplace business." 
-                                    : "Explore the marketplace and manage your software."}
+                    {/* Welcome Banner */}
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-background-secondary p-6 rounded-2xl border border-border-primary shadow-sm">
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                                <h1 className="text-2xl md:text-3xl font-display font-bold text-text-primary tracking-tight">
+                                    Welcome back, {user?.username}!
+                                </h1>
+                                {user?.is_verified_developer ? (
+                                    <span className="inline-flex items-center gap-1 bg-blue-500/10 text-accent-primary border border-accent-primary/20 px-2.5 py-0.5 rounded-full text-xs font-bold">
+                                        <ShieldCheck size={13} /> Verified Creator
+                                    </span>
+                                ) : (
+                                    <span className="inline-flex items-center gap-1 bg-text-tertiary/10 text-text-secondary border border-border-primary px-2.5 py-0.5 rounded-full text-xs font-bold">
+                                        Buyer
+                                    </span>
+                                )}
+                            </div>
+                            <p className="text-text-secondary text-sm">
+                                Overview of your marketplace activity, sales, and software assets.
                             </p>
                         </div>
+
                         <div className="flex items-center gap-3 shrink-0">
                             {user?.is_verified_developer ? (
                                 <Link to="/developer/listings/new/basics">
-                                    <Button className="bg-text-primary hover:bg-background-secondary hover:text-text-primary text-background-primary rounded-xl font-bold px-5 h-11 border border-transparent hover:border-border-primary">
-                                        <Plus size={18} className="mr-2" /> New Listing
+                                    <Button className="flex items-center gap-2 bg-accent-primary hover:bg-accent-hover text-white rounded-xl font-bold px-4 py-2.5 shadow-sm">
+                                        <Plus size={16} /> New Listing
                                     </Button>
                                 </Link>
                             ) : (
-                                <Link to="/browse">
-                                    <Button className="bg-text-primary hover:bg-background-secondary hover:text-text-primary text-background-primary rounded-xl font-bold px-5 h-11 border border-transparent hover:border-border-primary">
-                                        Explore Marketplace
+                                <Link to="/developer/apply">
+                                    <Button className="flex items-center gap-2 bg-accent-primary hover:bg-accent-hover text-white rounded-xl font-bold px-4 py-2.5 shadow-sm">
+                                        <Sparkles size={16} /> Become a Creator
                                     </Button>
                                 </Link>
                             )}
-                        </div>
-                    </div>
-
-                    {/* Stats Section */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                        {user?.is_verified_developer && (
-                            <>
-                                <div className="bg-background-primary p-6 rounded-2xl border border-border-primary shadow-sm flex flex-col justify-center">
-                                    <span className="text-sm font-semibold text-text-secondary mb-1">Total Revenue</span>
-                                    <h3 className="text-3xl font-display font-bold text-text-primary">
-                                        {new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(totalRevenue)}
-                                    </h3>
-                                </div>
-                                <div className="bg-background-primary p-6 rounded-2xl border border-border-primary shadow-sm flex flex-col justify-center">
-                                    <span className="text-sm font-semibold text-text-secondary mb-1">Sales Completed</span>
-                                    <h3 className="text-3xl font-display font-bold text-text-primary">{sales.length}</h3>
-                                </div>
-                            </>
-                        )}
-                        <div className="bg-background-primary p-6 rounded-2xl border border-border-primary shadow-sm flex flex-col justify-center">
-                            <span className="text-sm font-semibold text-text-secondary mb-1">My Purchases</span>
-                            <h3 className="text-3xl font-display font-bold text-text-primary">{purchases.length}</h3>
-                        </div>
-                    </div>
-
-                    {/* Call to Action */}
-                    {!user?.is_verified_developer && (
-                        <div className="mt-8 bg-background-secondary rounded-2xl p-8 border border-border-primary shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
-                            <div>
-                                <h3 className="text-xl font-bold text-text-primary mb-2">Are you a developer?</h3>
-                                <p className="text-text-secondary text-sm">Join ShipStack as a verified creator to start selling your software directly to buyers.</p>
-                            </div>
-                            <Link to="/developer/apply" className="shrink-0">
-                                <Button variant="outline" className="h-11 px-6 font-bold rounded-xl border-2 border-border-primary bg-background-primary hover:bg-background-secondary">
-                                    Become a Creator
+                            <Link to="/browse">
+                                <Button variant="outline" className="rounded-xl border-border-primary font-bold text-sm">
+                                    Explore Store
                                 </Button>
                             </Link>
                         </div>
-                    )}
+                    </div>
+
+                    {/* Stat Metrics Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {/* Stat 1 */}
+                        <div className="bg-background-secondary p-5 rounded-2xl border border-border-primary shadow-sm hover:border-accent-primary/40 transition-colors">
+                            <div className="flex items-center justify-between mb-3">
+                                <span className="text-xs font-bold uppercase tracking-wider text-text-secondary">Total Revenue</span>
+                                <div className="p-2 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl">
+                                    <DollarSign size={18} />
+                                </div>
+                            </div>
+                            <h3 className="text-2xl font-bold text-text-primary tracking-tight">
+                                {new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(totalRevenue)}
+                            </h3>
+                            <p className="text-xs text-text-tertiary mt-1 font-medium">Lifetime earned</p>
+                        </div>
+
+                        {/* Stat 2 */}
+                        <div className="bg-background-secondary p-5 rounded-2xl border border-border-primary shadow-sm hover:border-accent-primary/40 transition-colors">
+                            <div className="flex items-center justify-between mb-3">
+                                <span className="text-xs font-bold uppercase tracking-wider text-text-secondary">Sales Completed</span>
+                                <div className="p-2 bg-blue-500/10 text-accent-primary rounded-xl">
+                                    <TrendingUp size={18} />
+                                </div>
+                            </div>
+                            <h3 className="text-2xl font-bold text-text-primary tracking-tight">{sales.length}</h3>
+                            <p className="text-xs text-text-tertiary mt-1 font-medium">{uniqueCustomers} unique buyers</p>
+                        </div>
+
+                        {/* Stat 3 */}
+                        <div className="bg-background-secondary p-5 rounded-2xl border border-border-primary shadow-sm hover:border-accent-primary/40 transition-colors">
+                            <div className="flex items-center justify-between mb-3">
+                                <span className="text-xs font-bold uppercase tracking-wider text-text-secondary">My Purchases</span>
+                                <div className="p-2 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-xl">
+                                    <Package size={18} />
+                                </div>
+                            </div>
+                            <h3 className="text-2xl font-bold text-text-primary tracking-tight">{purchases.length}</h3>
+                            <p className="text-xs text-text-tertiary mt-1 font-medium">Owned licenses</p>
+                        </div>
+
+                        {/* Stat 4 */}
+                        <div className="bg-background-secondary p-5 rounded-2xl border border-border-primary shadow-sm hover:border-accent-primary/40 transition-colors">
+                            <div className="flex items-center justify-between mb-3">
+                                <span className="text-xs font-bold uppercase tracking-wider text-text-secondary">Account Status</span>
+                                <div className="p-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl">
+                                    <ShieldCheck size={18} />
+                                </div>
+                            </div>
+                            <h3 className="text-lg font-bold text-text-primary">
+                                {user?.is_verified_developer ? 'Verified' : 'Buyer'}
+                            </h3>
+                            <p className="text-xs text-text-tertiary mt-1 font-medium">Active & verified</p>
+                        </div>
+                    </div>
+
+                    {/* Main Section Layout */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        
+                        {/* Main Center Area (2 cols) */}
+                        <div className="lg:col-span-2 space-y-6">
+                            
+                            {/* Primary Storefront Card */}
+                            {user?.is_verified_developer ? (
+                                <div className="bg-gradient-to-br from-accent-primary to-accent-hover rounded-2xl p-7 text-white shadow-md relative overflow-hidden flex flex-col justify-between min-h-[220px]">
+                                    <div className="absolute inset-0 bg-white/5 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px] opacity-20"></div>
+                                    <div className="relative z-10 space-y-2">
+                                        <div className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-white border border-white/20">
+                                            <Store size={13} /> Developer Storefront Active
+                                        </div>
+                                        <h2 className="text-2xl font-display font-bold">Customize Your Brand</h2>
+                                        <p className="text-blue-100 text-sm max-w-lg leading-relaxed">
+                                            Upload custom cover banners, configure social media profiles, and customize your creator storefront appearance.
+                                        </p>
+                                    </div>
+                                    <div className="relative z-10 mt-6 flex flex-wrap items-center gap-3">
+                                        <Link to="/developer/storefront-settings">
+                                            <Button className="bg-white text-accent-primary hover:bg-blue-50 font-bold border-none shadow-md rounded-xl text-sm px-5 py-2.5">
+                                                Manage Storefront <ChevronRight size={16} className="ml-1" />
+                                            </Button>
+                                        </Link>
+                                        <Link to="/developer/sales">
+                                            <Button variant="ghost" className="text-white hover:bg-white/10 font-semibold rounded-xl text-sm px-4">
+                                                View Sales History <ArrowUpRight size={16} className="ml-1" />
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="bg-gradient-to-br from-accent-primary to-accent-hover rounded-2xl p-7 text-white shadow-md relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+                                    <div className="relative z-10 space-y-2">
+                                        <div className="inline-flex items-center gap-1.5 bg-amber-400/20 text-amber-200 border border-amber-400/30 px-3 py-1 rounded-full text-xs font-bold">
+                                            <Sparkles size={13} /> Become a Creator
+                                        </div>
+                                        <h2 className="text-2xl font-display font-bold">Sell Your Software on ShipStack</h2>
+                                        <p className="text-blue-100 text-sm max-w-md leading-relaxed">
+                                            Apply for verified developer status to launch software products, receive payments, and interact with buyers.
+                                        </p>
+                                    </div>
+                                    <div className="relative z-10 shrink-0 w-full md:w-auto">
+                                        <Link to="/developer/apply">
+                                            <Button className="w-full md:w-auto bg-white text-accent-primary hover:bg-blue-50 font-bold border-none shadow-md rounded-xl text-sm px-6 py-3">
+                                                Apply Now <ChevronRight size={16} className="ml-1" />
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Quick Navigation Cards */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                
+                                {/* Card 1 */}
+                                <Link to="/developer/listings" className="group bg-background-secondary p-5 rounded-2xl border border-border-primary shadow-sm hover:border-accent-primary hover:shadow-md transition-all flex items-start gap-4">
+                                    <div className="p-3 bg-accent-primary/10 text-accent-primary rounded-xl group-hover:bg-accent-primary group-hover:text-white transition-colors">
+                                        <Code size={20} />
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center gap-1 font-bold text-text-primary text-base group-hover:text-accent-primary transition-colors">
+                                            My Software <ArrowUpRight size={15} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        </div>
+                                        <p className="text-xs text-text-secondary mt-1">Manage draft & published listings</p>
+                                    </div>
+                                </Link>
+
+                                {/* Card 2 */}
+                                <Link to="/requests" className="group bg-background-secondary p-5 rounded-2xl border border-border-primary shadow-sm hover:border-accent-primary hover:shadow-md transition-all flex items-start gap-4">
+                                    <div className="p-3 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                                        <ClipboardList size={20} />
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center gap-1 font-bold text-text-primary text-base group-hover:text-emerald-600 transition-colors">
+                                            Request Board <ArrowUpRight size={15} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        </div>
+                                        <p className="text-xs text-text-secondary mt-1">Browse client software requests</p>
+                                    </div>
+                                </Link>
+
+                                {/* Card 3 */}
+                                <Link to="/dashboard/purchases" className="group bg-background-secondary p-5 rounded-2xl border border-border-primary shadow-sm hover:border-accent-primary hover:shadow-md transition-all flex items-start gap-4">
+                                    <div className="p-3 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-xl group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                                        <Package size={20} />
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center gap-1 font-bold text-text-primary text-base group-hover:text-purple-600 transition-colors">
+                                            My Purchases <ArrowUpRight size={15} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        </div>
+                                        <p className="text-xs text-text-secondary mt-1">Download owned software files</p>
+                                    </div>
+                                </Link>
+
+                                {/* Card 4 */}
+                                <Link to="/messages" className="group bg-background-secondary p-5 rounded-2xl border border-border-primary shadow-sm hover:border-accent-primary hover:shadow-md transition-all flex items-start gap-4">
+                                    <div className="p-3 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl group-hover:bg-amber-600 group-hover:text-white transition-colors">
+                                        <MessageSquare size={20} />
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center gap-1 font-bold text-text-primary text-base group-hover:text-amber-600 transition-colors">
+                                            Messages <ArrowUpRight size={15} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        </div>
+                                        <p className="text-xs text-text-secondary mt-1">Chat directly with buyers & sellers</p>
+                                    </div>
+                                </Link>
+
+                            </div>
+
+                        </div>
+
+                        {/* Right Sidebar Status Column (1 col) */}
+                        <div className="space-y-6">
+                            
+                            {/* Profile Card */}
+                            <div className="bg-background-secondary p-6 rounded-2xl border border-border-primary shadow-sm space-y-5">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-accent-primary to-blue-400 flex items-center justify-center text-white font-bold text-lg shadow-md shrink-0">
+                                        {user?.username?.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div className="overflow-hidden">
+                                        <h3 className="font-bold text-text-primary text-base truncate">{user?.username}</h3>
+                                        <p className="text-xs text-text-secondary truncate">{user?.email}</p>
+                                    </div>
+                                </div>
+
+                                <div className="pt-4 border-t border-border-primary space-y-3 text-xs">
+                                    <div className="flex justify-between items-center text-text-secondary">
+                                        <span>Role</span>
+                                        <span className="font-bold text-text-primary">{user?.is_verified_developer ? 'Developer' : 'Buyer'}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center text-text-secondary">
+                                        <span>Verification</span>
+                                        <span className={`font-bold ${user?.is_verified_developer ? 'text-emerald-600' : 'text-amber-600'}`}>
+                                            {user?.is_verified_developer ? 'Verified' : 'Unverified'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Quick Action Shortcuts */}
+                            <div className="bg-background-secondary p-5 rounded-2xl border border-border-primary shadow-sm space-y-3">
+                                <h4 className="text-xs font-bold uppercase tracking-wider text-text-secondary px-1">Shortcuts</h4>
+                                <div className="space-y-1 text-sm font-semibold">
+                                    <Link to="/browse" className="flex items-center justify-between p-2.5 rounded-xl hover:bg-background-primary text-text-primary transition-colors">
+                                        <span>Browse Marketplace</span>
+                                        <ChevronRight size={16} className="text-text-tertiary" />
+                                    </Link>
+                                    <Link to="/requests/new" className="flex items-center justify-between p-2.5 rounded-xl hover:bg-background-primary text-text-primary transition-colors">
+                                        <span>Post a Request</span>
+                                        <ChevronRight size={16} className="text-text-tertiary" />
+                                    </Link>
+                                    {user?.is_verified_developer && (
+                                        <Link to="/developer/sales" className="flex items-center justify-between p-2.5 rounded-xl hover:bg-background-primary text-text-primary transition-colors">
+                                            <span>Sales & Revenue Analytics</span>
+                                            <ChevronRight size={16} className="text-text-tertiary" />
+                                        </Link>
+                                    )}
+                                    {(user?.is_staff || user?.is_superuser) && (
+                                        <Link to="/admin" className="flex items-center justify-between p-2.5 rounded-xl hover:bg-background-primary text-text-primary transition-colors">
+                                            <span>Go to Admin Panel</span>
+                                            <ChevronRight size={16} className="text-text-tertiary" />
+                                        </Link>
+                                    )}
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
             </main>
         </div>
