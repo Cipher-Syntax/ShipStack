@@ -27,6 +27,10 @@ import ListingDetailPage from "../pages/marketplace/ListingDetailPage";
 import CheckoutSuccessPage from "../pages/marketplace/CheckoutSuccessPage";
 import CheckoutCanceledPage from "../pages/marketplace/CheckoutCanceledPage";
 
+import RequestsBrowsePage from "../pages/requests/RequestsBrowsePage";
+import CreateRequestPage from "../pages/requests/CreateRequestPage";
+import RequestDetailPage from "../pages/requests/RequestDetailPage";
+
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated, isLoading } = useAuth();
     if (isLoading) return <div>Loading...</div>;
@@ -162,6 +166,17 @@ const AppRoutes = () => {
                     </ProtectedRoute>
                 }
             />
+
+            <Route path="/requests" element={<RequestsBrowsePage />} />
+            <Route
+                path="/requests/new"
+                element={
+                    <ProtectedRoute>
+                        <CreateRequestPage />
+                    </ProtectedRoute>
+                }
+            />
+            <Route path="/requests/:id" element={<RequestDetailPage />} />
 
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
