@@ -6,11 +6,13 @@ from django.contrib.auth import get_user_model
 from .serializers import RegisterSerializer, ProfileSerializer, VerificationApplicationSerializer
 from .services import OTPService, EmailService
 from rest_framework_simplejwt.tokens import RefreshToken
+from .throttles import AuthRateThrottle, RegistrationRateThrottle
 
 User = get_user_model()
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [RegistrationRateThrottle]
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
@@ -61,6 +63,7 @@ class VerifyEmailView(APIView):
 
 class PasswordResetRequestView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [AuthRateThrottle]
 
     def post(self, request):
         email = request.data.get('email')
@@ -123,3 +126,8 @@ class VerificationApplicationView(APIView):
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    throttle_classes = [AuthRateThrottle]

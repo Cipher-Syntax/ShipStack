@@ -9,8 +9,11 @@ from .services import get_or_create_conversation, send_message
 
 User = get_user_model()
 
+from rest_framework.permissions import IsAuthenticated
+
 class ConversationViewSet(viewsets.ModelViewSet):
     serializer_class = ConversationSerializer
+    permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
         return Conversation.objects.filter(participants=self.request.user).order_by('-updated_at')

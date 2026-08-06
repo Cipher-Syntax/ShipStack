@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from cloudinary_storage.storage import RawMediaCloudinaryStorage
 from apps.marketplace.models import Category, Technology, Tag
+from apps.common.validators import validate_image_extension, validate_package_extension, validate_file_size
 
 class Listing(models.Model):
     class StatusChoices(models.TextChoices):
@@ -36,7 +37,7 @@ class ListingMedia(models.Model):
         DOCUMENTATION = 'DOCUMENTATION', 'Documentation'
 
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='media')
-    file = models.FileField(upload_to='listings/media/')
+    file = models.FileField(upload_to='listings/media/', validators=[validate_image_extension, validate_file_size])
     media_type = models.CharField(max_length=20, choices=MediaTypeChoices.choices)
     order = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -54,7 +55,7 @@ class SoftwarePackage(models.Model):
         FAILED = 'FAILED', 'Failed'
 
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='packages')
-    file = models.FileField(upload_to='listings/packages/', storage=RawMediaCloudinaryStorage())
+    file = models.FileField(upload_to='listings/packages/', storage=RawMediaCloudinaryStorage(), validators=[validate_package_extension, validate_file_size])
     scan_status = models.CharField(max_length=20, choices=ScanStatusChoices.choices, default=ScanStatusChoices.PENDING)
     scan_results = models.TextField(blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
