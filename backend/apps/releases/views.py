@@ -35,5 +35,17 @@ class DeveloperReleaseViewSet(viewsets.ModelViewSet):
             release.published_at = timezone.now()
             release.save()
 
+            from apps.commerce.models import Purchase
+            from apps.notifications.services import create_notification
+            buyers = [p.buyer for p in Purchase.objects.filter(listing=release.listing)]
+            for buyer in set(buyers):
+                create_notification(
+                    user=buyer,
+                    title='New Update Available',
+                    message=f"A new version ({release.version}) of {release.listing.title} is now available.",
+                    notification_type='UPDATE',
+                    link=f"/marketplace/{release.listing.slug}"
+                )
+
         serializer = self.get_serializer(release)
         return Response(serializer.data)

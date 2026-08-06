@@ -155,7 +155,7 @@ class PaymongoWebhookView(APIView):
                     order.save()
                     
                     # Create ownership record
-                    Purchase.objects.get_or_create(
+                    purchase, created = Purchase.objects.get_or_create(
                         buyer=order.buyer,
                         listing=order.listing,
                         defaults={
@@ -163,6 +163,17 @@ class PaymongoWebhookView(APIView):
                             'purchase_price': order.amount
                         }
                     )
+                    
+                    if created:
+                        from apps.notifications.services import create_notification
+                        for author in order.listing.authors.all():
+                            create_notification(
+                                user=author,
+                                title='New Sale!',
+                                message=f"{order.buyer.username} just purchased {order.listing.title} for PHP {order.amount/100:.2f}.",
+                                notification_type='PURCHASE',
+                                link='/dashboard'
+                            )
             except Order.DoesNotExist:
                 pass
                 

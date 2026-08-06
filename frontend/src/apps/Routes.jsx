@@ -12,6 +12,7 @@ import StorefrontSettingsPage from "../pages/developer/StorefrontSettingsPage";
 import StorefrontPage from "../pages/storefront/StorefrontPage";
 import DashboardPage from "../pages/dashboard/DashboardPage";
 import MessagingPage from "../pages/dashboard/MessagingPage";
+import NotificationCenterPage from "../pages/dashboard/NotificationCenterPage";
 import MyListingsPage from "../pages/developer/MyListingsPage";
 import DeveloperReleasesPage from "../pages/developer/DeveloperReleasesPage";
 import EditorLayout from "../layouts/EditorLayout";
@@ -149,6 +150,15 @@ const AppRoutes = () => {
                 element={
                     <ProtectedRoute>
                         <MessagingPage />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/dashboard/notifications"
+                element={
+                    <ProtectedRoute>
+                        <NotificationCenterPage />
                     </ProtectedRoute>
                 }
             />
