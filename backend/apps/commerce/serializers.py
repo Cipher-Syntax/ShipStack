@@ -21,3 +21,19 @@ class MyPurchaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Purchase
         fields = ['id', 'listing', 'purchase_price', 'purchased_at']
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
+class BuyerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username']
+
+class DeveloperSaleSerializer(serializers.ModelSerializer):
+    listing = PurchaseListingSerializer(read_only=True)
+    buyer = BuyerSerializer(read_only=True)
+
+    class Meta:
+        model = Purchase
+        fields = ['id', 'listing', 'buyer', 'purchase_price', 'purchased_at']
