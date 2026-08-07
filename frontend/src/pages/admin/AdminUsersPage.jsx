@@ -96,7 +96,7 @@ const AdminUsersPage = () => {
             >
               <option value="ALL">All Roles</option>
               <option value="STAFF">Staff Admin</option>
-              <option value="DEVELOPER">Verified Creator</option>
+              <option value="DEVELOPER">Verified Developer</option>
               <option value="SUSPENDED">Suspended Only</option>
             </select>
           </div>
@@ -155,7 +155,7 @@ const AdminUsersPage = () => {
                     <TableCell>
                       {user.is_superuser ? <Badge variant="primary" className="bg-slate-800 text-white border-slate-700">Superuser</Badge> : 
                        user.is_staff ? <Badge variant="info">Staff Admin</Badge> : 
-                       user.is_verified_developer ? <Badge variant="success">Verified Creator</Badge> : 
+                       user.is_verified_developer ? <Badge variant="success">Verified Developer</Badge> : 
                        <Badge variant="secondary" className="bg-background-primary">Standard Buyer</Badge>}
                     </TableCell>
                     <TableCell>

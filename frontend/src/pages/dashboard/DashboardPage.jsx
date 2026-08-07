@@ -233,9 +233,13 @@ const DashboardPage = () => {
                                 <h1 className="text-2xl md:text-3xl font-display font-bold text-text-primary tracking-tight">
                                     Welcome back, {user?.username}!
                                 </h1>
-                                {user?.is_verified_developer ? (
+                                {user?.is_superuser || user?.is_staff ? (
+                                    <span className="inline-flex items-center gap-1 bg-purple-500/10 text-purple-600 border border-purple-500/20 px-2.5 py-0.5 rounded-full text-xs font-bold">
+                                        <ShieldCheck size={13} /> Admin
+                                    </span>
+                                ) : user?.is_verified_developer ? (
                                     <span className="inline-flex items-center gap-1 bg-blue-500/10 text-accent-primary border border-accent-primary/20 px-2.5 py-0.5 rounded-full text-xs font-bold">
-                                        <ShieldCheck size={13} /> Verified Creator
+                                        <ShieldCheck size={13} /> Verified Developer
                                     </span>
                                 ) : (
                                     <span className="inline-flex items-center gap-1 bg-text-tertiary/10 text-text-secondary border border-border-primary px-2.5 py-0.5 rounded-full text-xs font-bold">
