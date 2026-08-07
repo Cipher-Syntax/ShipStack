@@ -2,8 +2,72 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getPublicListings, getCategories } from '../../services/listingService';
 import MarketplaceCard from '../../components/marketplace/MarketplaceCard';
-import { ShieldCheck, Code2, ArrowRight, Zap, CheckCircle2 } from 'lucide-react';
+import { 
+    ShieldCheck, 
+    Code2, 
+    ArrowRight, 
+    Zap, 
+    CheckCircle2,
+    Globe,
+    Code,
+    Smartphone,
+    Cloud,
+    Cpu,
+    ShoppingCart,
+    Database,
+    Server,
+    Layers,
+    Sparkles,
+    Terminal,
+    Box,
+    Workflow
+} from 'lucide-react';
 import { Button } from '../../components/ui/button';
+
+const getCategoryIconDetails = (category) => {
+    const name = (category?.name || category?.slug || '').toLowerCase();
+    const iconName = (category?.icon || '').toLowerCase();
+
+    if (name.includes('web') || name.includes('app') || iconName.includes('globe')) {
+        return { icon: Globe, color: 'text-blue-500 dark:text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20' };
+    }
+    if (name.includes('developer') || name.includes('tool') || iconName.includes('code')) {
+        return { icon: Code, color: 'text-purple-500 dark:text-purple-400', bg: 'bg-purple-500/10 border-purple-500/20' };
+    }
+    if (name.includes('mobile') || name.includes('phone') || iconName.includes('smartphone')) {
+        return { icon: Smartphone, color: 'text-emerald-500 dark:text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' };
+    }
+    if (name.includes('saas') || name.includes('cloud') || iconName.includes('cloud')) {
+        return { icon: Cloud, color: 'text-sky-500 dark:text-sky-400', bg: 'bg-sky-500/10 border-sky-500/20' };
+    }
+    if (name.includes('ai') || name.includes('machine') || name.includes('intelligence') || iconName.includes('cpu')) {
+        return { icon: Cpu, color: 'text-amber-500 dark:text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20' };
+    }
+    if (name.includes('commerce') || name.includes('shop') || iconName.includes('cart')) {
+        return { icon: ShoppingCart, color: 'text-rose-500 dark:text-rose-400', bg: 'bg-rose-500/10 border-rose-500/20' };
+    }
+    if (name.includes('database') || name.includes('storage') || iconName.includes('database')) {
+        return { icon: Database, color: 'text-cyan-500 dark:text-cyan-400', bg: 'bg-cyan-500/10 border-cyan-500/20' };
+    }
+    if (name.includes('api') || name.includes('service') || iconName.includes('server')) {
+        return { icon: Server, color: 'text-orange-500 dark:text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20' };
+    }
+    if (name.includes('security') || name.includes('auth') || iconName.includes('shield')) {
+        return { icon: ShieldCheck, color: 'text-indigo-500 dark:text-indigo-400', bg: 'bg-indigo-500/10 border-indigo-500/20' };
+    }
+    if (name.includes('script') || name.includes('cli') || iconName.includes('terminal')) {
+        return { icon: Terminal, color: 'text-teal-500 dark:text-teal-400', bg: 'bg-teal-500/10 border-teal-500/20' };
+    }
+
+    const fallbacks = [
+        { icon: Sparkles, color: 'text-blue-500 dark:text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20' },
+        { icon: Layers, color: 'text-pink-500 dark:text-pink-400', bg: 'bg-pink-500/10 border-pink-500/20' },
+        { icon: Workflow, color: 'text-violet-500 dark:text-violet-400', bg: 'bg-violet-500/10 border-violet-500/20' },
+        { icon: Box, color: 'text-emerald-500 dark:text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' }
+    ];
+    const index = ((category?.id || 0) + (category?.name?.length || 0)) % fallbacks.length;
+    return fallbacks[index];
+};
 
 const HomePage = () => {
     const [recentListings, setRecentListings] = useState([]);
@@ -116,16 +180,19 @@ const HomePage = () => {
                     {/* Infinite Carousel */}
                     <div className="relative w-full overflow-hidden flex [mask-image:_linear-gradient(to_right,transparent_0,_black_32px,_black_calc(100%-32px),transparent_100%)]">
                         <div className="flex gap-4 animate-infinite-scroll py-2">
-                            {(categories.length > 0 ? [...categories, ...categories, ...categories, ...categories] : []).map((category, idx) => (
-                                <Link key={`${category.id}-${idx}`} to={`/browse?category=${category.slug}`} className="group w-48 h-48 shrink-0">
-                                    <div className="p-5 rounded-xl border border-border-primary bg-surface-primary hover:border-accent-primary hover:shadow-md transition-all flex flex-col items-center justify-center text-center space-y-3 h-full w-full aspect-square">
-                                        <div className="w-12 h-12 rounded-full bg-background-secondary text-text-secondary group-hover:text-accent-primary group-hover:bg-accent-primary/10 flex items-center justify-center transition-colors shrink-0">
-                                            <Zap className="w-5 h-5" />
+                            {(categories.length > 0 ? [...categories, ...categories, ...categories, ...categories] : []).map((category, idx) => {
+                                const { icon: CategoryIcon, color: iconColor, bg: iconBg } = getCategoryIconDetails(category);
+                                return (
+                                    <Link key={`${category.id}-${idx}`} to={`/browse?category=${category.slug}`} className="group w-48 h-48 shrink-0">
+                                        <div className="p-5 rounded-xl border border-border-primary bg-surface-primary hover:border-accent-primary hover:shadow-md transition-all flex flex-col items-center justify-center text-center space-y-3 h-full w-full aspect-square">
+                                            <div className={`w-12 h-12 rounded-2xl ${iconBg} border flex items-center justify-center transition-transform group-hover:scale-110 shrink-0`}>
+                                                <CategoryIcon className={`w-6 h-6 ${iconColor}`} />
+                                            </div>
+                                            <span className="font-semibold text-text-primary group-hover:text-accent-primary transition-colors truncate w-full text-sm">{category.name}</span>
                                         </div>
-                                        <span className="font-semibold text-text-primary group-hover:text-accent-primary transition-colors truncate w-full text-sm">{category.name}</span>
-                                    </div>
-                                </Link>
-                            ))}
+                                    </Link>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
