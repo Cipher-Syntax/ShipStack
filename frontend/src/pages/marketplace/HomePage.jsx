@@ -117,12 +117,12 @@ const HomePage = () => {
                     <div className="relative w-full overflow-hidden flex [mask-image:_linear-gradient(to_right,transparent_0,_black_32px,_black_calc(100%-32px),transparent_100%)]">
                         <div className="flex gap-4 animate-infinite-scroll py-2">
                             {(categories.length > 0 ? [...categories, ...categories, ...categories, ...categories] : []).map((category, idx) => (
-                                <Link key={`${category.id}-${idx}`} to={`/browse?category=${category.slug}`} className="group w-56 shrink-0">
-                                    <div className="p-6 rounded-xl border border-border-primary bg-surface-primary hover:border-accent-primary hover:shadow-md transition-all flex flex-col items-center text-center space-y-4">
-                                        <div className="w-12 h-12 rounded-full bg-background-secondary text-text-secondary group-hover:text-accent-primary group-hover:bg-accent-primary/10 flex items-center justify-center transition-colors">
+                                <Link key={`${category.id}-${idx}`} to={`/browse?category=${category.slug}`} className="group w-48 h-48 shrink-0">
+                                    <div className="p-5 rounded-xl border border-border-primary bg-surface-primary hover:border-accent-primary hover:shadow-md transition-all flex flex-col items-center justify-center text-center space-y-3 h-full w-full aspect-square">
+                                        <div className="w-12 h-12 rounded-full bg-background-secondary text-text-secondary group-hover:text-accent-primary group-hover:bg-accent-primary/10 flex items-center justify-center transition-colors shrink-0">
                                             <Zap className="w-5 h-5" />
                                         </div>
-                                        <span className="font-semibold text-text-primary group-hover:text-accent-primary transition-colors truncate w-full">{category.name}</span>
+                                        <span className="font-semibold text-text-primary group-hover:text-accent-primary transition-colors truncate w-full text-sm">{category.name}</span>
                                     </div>
                                 </Link>
                             ))}
