@@ -2,71 +2,55 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getPublicListings, getCategories } from '../../services/listingService';
 import MarketplaceCard from '../../components/marketplace/MarketplaceCard';
-import { 
-    ShieldCheck, 
-    Code2, 
-    ArrowRight, 
-    Zap, 
-    CheckCircle2,
-    Globe,
-    Code,
-    Smartphone,
-    Cloud,
-    Cpu,
-    ShoppingCart,
-    Database,
-    Server,
-    Layers,
-    Sparkles,
-    Terminal,
-    Box,
-    Workflow
-} from 'lucide-react';
+import { ShieldCheck, CheckCircle2, Code2, ArrowRight } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 import { Button } from '../../components/ui/button';
 
 const getCategoryIconDetails = (category) => {
-    const name = (category?.name || category?.slug || '').toLowerCase();
-    const iconName = (category?.icon || '').toLowerCase();
-
-    if (name.includes('web') || name.includes('app') || iconName.includes('globe')) {
-        return { icon: Globe, color: 'text-blue-500 dark:text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20' };
-    }
-    if (name.includes('developer') || name.includes('tool') || iconName.includes('code')) {
-        return { icon: Code, color: 'text-purple-500 dark:text-purple-400', bg: 'bg-purple-500/10 border-purple-500/20' };
-    }
-    if (name.includes('mobile') || name.includes('phone') || iconName.includes('smartphone')) {
-        return { icon: Smartphone, color: 'text-emerald-500 dark:text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' };
-    }
-    if (name.includes('saas') || name.includes('cloud') || iconName.includes('cloud')) {
-        return { icon: Cloud, color: 'text-sky-500 dark:text-sky-400', bg: 'bg-sky-500/10 border-sky-500/20' };
-    }
-    if (name.includes('ai') || name.includes('machine') || name.includes('intelligence') || iconName.includes('cpu')) {
-        return { icon: Cpu, color: 'text-amber-500 dark:text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20' };
-    }
-    if (name.includes('commerce') || name.includes('shop') || iconName.includes('cart')) {
-        return { icon: ShoppingCart, color: 'text-rose-500 dark:text-rose-400', bg: 'bg-rose-500/10 border-rose-500/20' };
-    }
-    if (name.includes('database') || name.includes('storage') || iconName.includes('database')) {
-        return { icon: Database, color: 'text-cyan-500 dark:text-cyan-400', bg: 'bg-cyan-500/10 border-cyan-500/20' };
-    }
-    if (name.includes('api') || name.includes('service') || iconName.includes('server')) {
-        return { icon: Server, color: 'text-orange-500 dark:text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20' };
-    }
-    if (name.includes('security') || name.includes('auth') || iconName.includes('shield')) {
-        return { icon: ShieldCheck, color: 'text-indigo-500 dark:text-indigo-400', bg: 'bg-indigo-500/10 border-indigo-500/20' };
-    }
-    if (name.includes('script') || name.includes('cli') || iconName.includes('terminal')) {
-        return { icon: Terminal, color: 'text-teal-500 dark:text-teal-400', bg: 'bg-teal-500/10 border-teal-500/20' };
+    // Dynamically load the exact icon from lucide-react
+    let IconComponent = LucideIcons.LayoutGrid; // Default fallback
+    
+    if (category?.icon) {
+        // Handle direct match (e.g., "Globe", "Code")
+        if (LucideIcons[category.icon]) {
+            IconComponent = LucideIcons[category.icon];
+        } else {
+            // Handle kebab-case to PascalCase conversion if needed (e.g., "layout-grid" -> "LayoutGrid")
+            const formattedName = category.icon
+                .split('-')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join('');
+            if (LucideIcons[formattedName]) {
+                IconComponent = LucideIcons[formattedName];
+            }
+        }
     }
 
-    const fallbacks = [
-        { icon: Sparkles, color: 'text-blue-500 dark:text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20' },
-        { icon: Layers, color: 'text-pink-500 dark:text-pink-400', bg: 'bg-pink-500/10 border-pink-500/20' },
-        { icon: Workflow, color: 'text-violet-500 dark:text-violet-400', bg: 'bg-violet-500/10 border-violet-500/20' },
-        { icon: Box, color: 'text-emerald-500 dark:text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' }
+    // Comprehensive color palette for categories
+    const colors = [
+        { color: 'text-blue-500 dark:text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20' },
+        { color: 'text-purple-500 dark:text-purple-400', bg: 'bg-purple-500/10 border-purple-500/20' },
+        { color: 'text-emerald-500 dark:text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' },
+        { color: 'text-sky-500 dark:text-sky-400', bg: 'bg-sky-500/10 border-sky-500/20' },
+        { color: 'text-amber-500 dark:text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20' },
+        { color: 'text-rose-500 dark:text-rose-400', bg: 'bg-rose-500/10 border-rose-500/20' },
+        { color: 'text-cyan-500 dark:text-cyan-400', bg: 'bg-cyan-500/10 border-cyan-500/20' },
+        { color: 'text-orange-500 dark:text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20' },
+        { color: 'text-indigo-500 dark:text-indigo-400', bg: 'bg-indigo-500/10 border-indigo-500/20' },
+        { color: 'text-teal-500 dark:text-teal-400', bg: 'bg-teal-500/10 border-teal-500/20' },
+        { color: 'text-pink-500 dark:text-pink-400', bg: 'bg-pink-500/10 border-pink-500/20' },
+        { color: 'text-violet-500 dark:text-violet-400', bg: 'bg-violet-500/10 border-violet-500/20' }
     ];
-    const index = ((category?.id || 0) + (category?.name?.length || 0)) % fallbacks.length;
-    return fallbacks[index];
+
+    // Pick a stable color based on category id (fallback to string length if no id)
+    const seed = category?.id || (category?.name?.length || 0);
+    const colorIndex = seed % colors.length;
+
+    return { 
+        icon: IconComponent, 
+        color: colors[colorIndex].color, 
+        bg: colors[colorIndex].bg 
+    };
 };
 
 const HomePage = () => {
