@@ -101,9 +101,9 @@ const HomePage = () => {
             </section>
 
             {/* Featured Categories */}
-            <section className="py-20 bg-background-primary overflow-hidden">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
-                    <div className="flex justify-between items-end">
+            <section className="py-20 bg-background-primary">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-between items-end mb-10">
                         <div>
                             <h2 className="text-3xl font-display font-bold text-text-primary">Explore Categories</h2>
                             <p className="text-text-secondary mt-2">Find the exact tools for your stack.</p>
@@ -112,21 +112,21 @@ const HomePage = () => {
                             View all <ArrowRight className="w-4 h-4 ml-1" />
                         </Link>
                     </div>
-                </div>
 
-                {/* Infinite Carousel */}
-                <div className="relative w-full overflow-hidden flex [mask-image:_linear-gradient(to_right,transparent_0,_black_48px,_black_calc(100%-48px),transparent_100%)]">
-                    <div className="flex gap-4 animate-infinite-scroll py-2">
-                        {(categories.length > 0 ? [...categories, ...categories, ...categories, ...categories] : []).map((category, idx) => (
-                            <Link key={`${category.id}-${idx}`} to={`/browse?category=${category.slug}`} className="group w-56 shrink-0">
-                                <div className="p-6 rounded-xl border border-border-primary bg-surface-primary hover:border-accent-primary hover:shadow-md transition-all flex flex-col items-center text-center space-y-4">
-                                    <div className="w-12 h-12 rounded-full bg-background-secondary text-text-secondary group-hover:text-accent-primary group-hover:bg-accent-primary/10 flex items-center justify-center transition-colors">
-                                        <Zap className="w-5 h-5" />
+                    {/* Infinite Carousel */}
+                    <div className="relative w-full overflow-hidden flex [mask-image:_linear-gradient(to_right,transparent_0,_black_32px,_black_calc(100%-32px),transparent_100%)]">
+                        <div className="flex gap-4 animate-infinite-scroll py-2">
+                            {(categories.length > 0 ? [...categories, ...categories, ...categories, ...categories] : []).map((category, idx) => (
+                                <Link key={`${category.id}-${idx}`} to={`/browse?category=${category.slug}`} className="group w-56 shrink-0">
+                                    <div className="p-6 rounded-xl border border-border-primary bg-surface-primary hover:border-accent-primary hover:shadow-md transition-all flex flex-col items-center text-center space-y-4">
+                                        <div className="w-12 h-12 rounded-full bg-background-secondary text-text-secondary group-hover:text-accent-primary group-hover:bg-accent-primary/10 flex items-center justify-center transition-colors">
+                                            <Zap className="w-5 h-5" />
+                                        </div>
+                                        <span className="font-semibold text-text-primary group-hover:text-accent-primary transition-colors truncate w-full">{category.name}</span>
                                     </div>
-                                    <span className="font-semibold text-text-primary group-hover:text-accent-primary transition-colors truncate w-full">{category.name}</span>
-                                </div>
-                            </Link>
-                        ))}
+                                </Link>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </section>
